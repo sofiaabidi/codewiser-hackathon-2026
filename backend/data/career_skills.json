@@ -1,0 +1,94 @@
+{
+  "roles": {
+    "data_scientist": {
+      "title": "Data Scientist",
+      "description": "Analyzes complex data to extract insights and drive decisions using statistics and machine learning",
+      "icon": "📊",
+      "color": "#4f8cff",
+      "skills": {
+        "python": { "name": "Python", "weight": 0.9, "category": "programming", "description": "General-purpose programming and scripting" },
+        "statistics": { "name": "Statistics", "weight": 0.85, "category": "mathematics", "description": "Statistical analysis, hypothesis testing, distributions" },
+        "machine_learning": { "name": "Machine Learning", "weight": 0.95, "category": "core", "description": "Supervised/unsupervised learning, model training, evaluation" },
+        "sql": { "name": "SQL", "weight": 0.7, "category": "data", "description": "Database querying, joins, aggregations" },
+        "data_visualization": { "name": "Data Visualization", "weight": 0.65, "category": "communication", "description": "Charts, dashboards, storytelling with data" },
+        "linear_algebra": { "name": "Linear Algebra", "weight": 0.6, "category": "mathematics", "description": "Matrices, vectors, transformations" },
+        "probability": { "name": "Probability", "weight": 0.75, "category": "mathematics", "description": "Probability theory, Bayes theorem, distributions" }
+      }
+    },
+    "frontend_developer": {
+      "title": "Frontend Developer",
+      "description": "Builds responsive user interfaces and interactive web experiences",
+      "icon": "🎨",
+      "color": "#e040fb",
+      "skills": {
+        "html_css": { "name": "HTML & CSS", "weight": 0.9, "category": "core", "description": "Semantic markup, layouts, styling, animations" },
+        "javascript": { "name": "JavaScript", "weight": 0.95, "category": "programming", "description": "ES6+, DOM manipulation, async programming" },
+        "react": { "name": "React", "weight": 0.85, "category": "framework", "description": "Component architecture, hooks, state management" },
+        "typescript": { "name": "TypeScript", "weight": 0.7, "category": "programming", "description": "Type safety, interfaces, generics" },
+        "responsive_design": { "name": "Responsive Design", "weight": 0.75, "category": "design", "description": "Mobile-first, media queries, flexbox, grid" },
+        "git": { "name": "Git", "weight": 0.6, "category": "tooling", "description": "Version control, branching, collaboration" },
+        "testing": { "name": "Testing", "weight": 0.55, "category": "quality", "description": "Unit testing, integration testing, Jest, Cypress" }
+      }
+    },
+    "backend_developer": {
+      "title": "Backend Developer",
+      "description": "Designs and builds server-side applications, APIs, and database systems",
+      "icon": "⚙️",
+      "color": "#00e676",
+      "skills": {
+        "python": { "name": "Python", "weight": 0.85, "category": "programming", "description": "Server-side scripting, automation" },
+        "databases": { "name": "Databases", "weight": 0.9, "category": "data", "description": "SQL/NoSQL design, optimization, migrations" },
+        "api_design": { "name": "API Design", "weight": 0.95, "category": "core", "description": "RESTful APIs, GraphQL, authentication" },
+        "system_design": { "name": "System Design", "weight": 0.8, "category": "architecture", "description": "Scalability, microservices, caching" },
+        "docker": { "name": "Docker", "weight": 0.65, "category": "devops", "description": "Containerization, Docker Compose" },
+        "git": { "name": "Git", "weight": 0.6, "category": "tooling", "description": "Version control, branching, collaboration" },
+        "security": { "name": "Security", "weight": 0.7, "category": "core", "description": "Authentication, encryption, OWASP" }
+      }
+    },
+    "devops_engineer": {
+      "title": "DevOps Engineer",
+      "description": "Bridges development and operations with CI/CD, infrastructure, and automation",
+      "icon": "🚀",
+      "color": "#ff6e40",
+      "skills": {
+        "linux": { "name": "Linux", "weight": 0.9, "category": "core", "description": "Shell scripting, system administration" },
+        "docker": { "name": "Docker", "weight": 0.9, "category": "containerization", "description": "Containers, images, orchestration" },
+        "kubernetes": { "name": "Kubernetes", "weight": 0.85, "category": "orchestration", "description": "Cluster management, deployments, services" },
+        "ci_cd": { "name": "CI/CD", "weight": 0.95, "category": "core", "description": "Pipeline design, GitHub Actions, Jenkins" },
+        "cloud_platforms": { "name": "Cloud Platforms", "weight": 0.85, "category": "infrastructure", "description": "AWS/GCP/Azure services and architecture" },
+        "networking": { "name": "Networking", "weight": 0.7, "category": "fundamentals", "description": "TCP/IP, DNS, load balancing, firewalls" },
+        "monitoring": { "name": "Monitoring", "weight": 0.65, "category": "observability", "description": "Prometheus, Grafana, alerting, logging" }
+      }
+    },
+    "ml_engineer": {
+      "title": "ML Engineer",
+      "description": "Builds and deploys production machine learning systems at scale",
+      "icon": "🤖",
+      "color": "#7c4dff",
+      "skills": {
+        "python": { "name": "Python", "weight": 0.9, "category": "programming", "description": "Scientific computing, scripting" },
+        "machine_learning": { "name": "Machine Learning", "weight": 0.95, "category": "core", "description": "Algorithms, model selection, hyperparameter tuning" },
+        "deep_learning": { "name": "Deep Learning", "weight": 0.9, "category": "core", "description": "Neural networks, CNNs, RNNs, transformers" },
+        "mlops": { "name": "MLOps", "weight": 0.8, "category": "engineering", "description": "Model deployment, monitoring, pipelines" },
+        "data_engineering": { "name": "Data Engineering", "weight": 0.75, "category": "data", "description": "ETL, data pipelines, big data tools" },
+        "linear_algebra": { "name": "Linear Algebra", "weight": 0.7, "category": "mathematics", "description": "Matrices, vectors, decompositions" },
+        "cloud_platforms": { "name": "Cloud Platforms", "weight": 0.65, "category": "infrastructure", "description": "AWS SageMaker, GCP Vertex AI" }
+      }
+    },
+    "product_manager": {
+      "title": "Product Manager",
+      "description": "Defines product vision, strategy, and roadmap to deliver user value",
+      "icon": "📋",
+      "color": "#ffab00",
+      "skills": {
+        "product_strategy": { "name": "Product Strategy", "weight": 0.95, "category": "core", "description": "Vision, roadmap planning, prioritization" },
+        "user_research": { "name": "User Research", "weight": 0.9, "category": "research", "description": "Interviews, surveys, usability testing" },
+        "data_analysis": { "name": "Data Analysis", "weight": 0.8, "category": "analytics", "description": "Metrics, A/B testing, funnel analysis" },
+        "communication": { "name": "Communication", "weight": 0.85, "category": "soft_skills", "description": "Stakeholder management, presentations" },
+        "technical_literacy": { "name": "Technical Literacy", "weight": 0.65, "category": "technical", "description": "Understanding engineering tradeoffs" },
+        "agile": { "name": "Agile / Scrum", "weight": 0.7, "category": "methodology", "description": "Sprint planning, backlog grooming, retrospectives" },
+        "ux_design": { "name": "UX Design Basics", "weight": 0.6, "category": "design", "description": "Wireframing, user flows, design thinking" }
+      }
+    }
+  }
+}

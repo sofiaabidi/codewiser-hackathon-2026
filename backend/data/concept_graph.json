@@ -1,0 +1,708 @@
+{
+  "concepts": {
+    "machine_learning": {
+      "name": "Machine Learning",
+      "category": "core",
+      "difficulty": 0.85,
+      "estimated_hours": 40,
+      "prerequisites": ["linear_algebra", "probability", "python_libraries"],
+      "description": "Supervised/unsupervised learning, model training and evaluation"
+    },
+    "linear_algebra": {
+      "name": "Linear Algebra",
+      "category": "mathematics",
+      "difficulty": 0.7,
+      "estimated_hours": 25,
+      "prerequisites": ["matrices", "vectors", "eigenvalues"],
+      "description": "Mathematical foundations for data transformations"
+    },
+    "matrices": {
+      "name": "Matrices",
+      "category": "mathematics",
+      "difficulty": 0.5,
+      "estimated_hours": 8,
+      "prerequisites": ["basic_algebra"],
+      "description": "Matrix operations, multiplication, inverses"
+    },
+    "vectors": {
+      "name": "Vectors",
+      "category": "mathematics",
+      "difficulty": 0.45,
+      "estimated_hours": 6,
+      "prerequisites": ["basic_algebra"],
+      "description": "Vector spaces, dot products, cross products"
+    },
+    "eigenvalues": {
+      "name": "Eigenvalues & Eigenvectors",
+      "category": "mathematics",
+      "difficulty": 0.75,
+      "estimated_hours": 10,
+      "prerequisites": ["matrices", "vectors"],
+      "description": "Eigendecomposition, PCA foundations"
+    },
+    "basic_algebra": {
+      "name": "Basic Algebra",
+      "category": "mathematics",
+      "difficulty": 0.2,
+      "estimated_hours": 4,
+      "prerequisites": [],
+      "description": "Variables, equations, functions"
+    },
+    "probability": {
+      "name": "Probability",
+      "category": "mathematics",
+      "difficulty": 0.65,
+      "estimated_hours": 20,
+      "prerequisites": ["basic_statistics", "combinatorics"],
+      "description": "Probability theory, Bayes theorem, distributions"
+    },
+    "basic_statistics": {
+      "name": "Basic Statistics",
+      "category": "mathematics",
+      "difficulty": 0.4,
+      "estimated_hours": 10,
+      "prerequisites": ["basic_algebra"],
+      "description": "Mean, median, standard deviation, variance"
+    },
+    "combinatorics": {
+      "name": "Combinatorics",
+      "category": "mathematics",
+      "difficulty": 0.5,
+      "estimated_hours": 8,
+      "prerequisites": ["basic_algebra"],
+      "description": "Permutations, combinations, counting principles"
+    },
+    "python_libraries": {
+      "name": "Python ML Libraries",
+      "category": "programming",
+      "difficulty": 0.55,
+      "estimated_hours": 15,
+      "prerequisites": ["python_basics", "numpy_pandas"],
+      "description": "Scikit-learn, TensorFlow/PyTorch basics"
+    },
+    "python_basics": {
+      "name": "Python Basics",
+      "category": "programming",
+      "difficulty": 0.3,
+      "estimated_hours": 12,
+      "prerequisites": [],
+      "description": "Syntax, data types, control flow, functions"
+    },
+    "numpy_pandas": {
+      "name": "NumPy & Pandas",
+      "category": "programming",
+      "difficulty": 0.45,
+      "estimated_hours": 12,
+      "prerequisites": ["python_basics"],
+      "description": "Array operations, DataFrames, data manipulation"
+    },
+    "sql": {
+      "name": "SQL",
+      "category": "data",
+      "difficulty": 0.5,
+      "estimated_hours": 15,
+      "prerequisites": ["sql_basics", "sql_joins", "sql_aggregations"],
+      "description": "Complete SQL proficiency for data work"
+    },
+    "sql_basics": {
+      "name": "SQL Basics",
+      "category": "data",
+      "difficulty": 0.3,
+      "estimated_hours": 6,
+      "prerequisites": [],
+      "description": "SELECT, WHERE, ORDER BY, basic queries"
+    },
+    "sql_joins": {
+      "name": "SQL Joins",
+      "category": "data",
+      "difficulty": 0.45,
+      "estimated_hours": 5,
+      "prerequisites": ["sql_basics"],
+      "description": "INNER, LEFT, RIGHT, FULL joins"
+    },
+    "sql_aggregations": {
+      "name": "SQL Aggregations",
+      "category": "data",
+      "difficulty": 0.4,
+      "estimated_hours": 5,
+      "prerequisites": ["sql_basics"],
+      "description": "GROUP BY, HAVING, window functions"
+    },
+    "data_visualization": {
+      "name": "Data Visualization",
+      "category": "communication",
+      "difficulty": 0.5,
+      "estimated_hours": 15,
+      "prerequisites": ["viz_principles", "matplotlib_seaborn"],
+      "description": "Creating effective charts and dashboards"
+    },
+    "viz_principles": {
+      "name": "Visualization Principles",
+      "category": "communication",
+      "difficulty": 0.35,
+      "estimated_hours": 5,
+      "prerequisites": [],
+      "description": "Chart types, color theory, storytelling with data"
+    },
+    "matplotlib_seaborn": {
+      "name": "Matplotlib & Seaborn",
+      "category": "programming",
+      "difficulty": 0.4,
+      "estimated_hours": 8,
+      "prerequisites": ["python_basics", "numpy_pandas"],
+      "description": "Python plotting libraries"
+    },
+    "statistics": {
+      "name": "Statistics",
+      "category": "mathematics",
+      "difficulty": 0.6,
+      "estimated_hours": 20,
+      "prerequisites": ["basic_statistics", "probability", "hypothesis_testing"],
+      "description": "Statistical analysis and inference"
+    },
+    "hypothesis_testing": {
+      "name": "Hypothesis Testing",
+      "category": "mathematics",
+      "difficulty": 0.6,
+      "estimated_hours": 10,
+      "prerequisites": ["basic_statistics", "probability"],
+      "description": "t-tests, chi-square, p-values, confidence intervals"
+    },
+    "python": {
+      "name": "Python",
+      "category": "programming",
+      "difficulty": 0.5,
+      "estimated_hours": 25,
+      "prerequisites": ["python_basics", "python_oop", "python_advanced"],
+      "description": "Complete Python proficiency"
+    },
+    "python_oop": {
+      "name": "Python OOP",
+      "category": "programming",
+      "difficulty": 0.5,
+      "estimated_hours": 10,
+      "prerequisites": ["python_basics"],
+      "description": "Classes, inheritance, polymorphism"
+    },
+    "python_advanced": {
+      "name": "Python Advanced",
+      "category": "programming",
+      "difficulty": 0.65,
+      "estimated_hours": 12,
+      "prerequisites": ["python_basics", "python_oop"],
+      "description": "Decorators, generators, context managers, async"
+    },
+    "deep_learning": {
+      "name": "Deep Learning",
+      "category": "core",
+      "difficulty": 0.9,
+      "estimated_hours": 45,
+      "prerequisites": ["machine_learning", "linear_algebra", "calculus_basics"],
+      "description": "Neural networks, CNNs, RNNs, transformers"
+    },
+    "calculus_basics": {
+      "name": "Calculus Basics",
+      "category": "mathematics",
+      "difficulty": 0.6,
+      "estimated_hours": 15,
+      "prerequisites": ["basic_algebra"],
+      "description": "Derivatives, gradients, chain rule"
+    },
+    "html_css": {
+      "name": "HTML & CSS",
+      "category": "core",
+      "difficulty": 0.4,
+      "estimated_hours": 20,
+      "prerequisites": ["html_basics", "css_fundamentals", "css_layout"],
+      "description": "Complete web markup and styling"
+    },
+    "html_basics": {
+      "name": "HTML Basics",
+      "category": "core",
+      "difficulty": 0.2,
+      "estimated_hours": 6,
+      "prerequisites": [],
+      "description": "Tags, attributes, semantic elements, forms"
+    },
+    "css_fundamentals": {
+      "name": "CSS Fundamentals",
+      "category": "core",
+      "difficulty": 0.35,
+      "estimated_hours": 10,
+      "prerequisites": ["html_basics"],
+      "description": "Selectors, box model, typography, colors"
+    },
+    "css_layout": {
+      "name": "CSS Layout",
+      "category": "core",
+      "difficulty": 0.5,
+      "estimated_hours": 10,
+      "prerequisites": ["css_fundamentals"],
+      "description": "Flexbox, Grid, positioning, responsive"
+    },
+    "javascript": {
+      "name": "JavaScript",
+      "category": "programming",
+      "difficulty": 0.6,
+      "estimated_hours": 30,
+      "prerequisites": ["js_basics", "js_dom", "js_async"],
+      "description": "Complete JavaScript proficiency"
+    },
+    "js_basics": {
+      "name": "JS Basics",
+      "category": "programming",
+      "difficulty": 0.35,
+      "estimated_hours": 12,
+      "prerequisites": [],
+      "description": "Variables, functions, arrays, objects, loops"
+    },
+    "js_dom": {
+      "name": "DOM Manipulation",
+      "category": "programming",
+      "difficulty": 0.45,
+      "estimated_hours": 8,
+      "prerequisites": ["js_basics", "html_basics"],
+      "description": "Selecting, creating, modifying DOM elements"
+    },
+    "js_async": {
+      "name": "Async JavaScript",
+      "category": "programming",
+      "difficulty": 0.6,
+      "estimated_hours": 10,
+      "prerequisites": ["js_basics"],
+      "description": "Promises, async/await, fetch API"
+    },
+    "react": {
+      "name": "React",
+      "category": "framework",
+      "difficulty": 0.65,
+      "estimated_hours": 30,
+      "prerequisites": ["javascript", "react_basics", "react_hooks"],
+      "description": "Complete React proficiency"
+    },
+    "react_basics": {
+      "name": "React Basics",
+      "category": "framework",
+      "difficulty": 0.5,
+      "estimated_hours": 12,
+      "prerequisites": ["javascript"],
+      "description": "Components, JSX, props, state"
+    },
+    "react_hooks": {
+      "name": "React Hooks",
+      "category": "framework",
+      "difficulty": 0.6,
+      "estimated_hours": 10,
+      "prerequisites": ["react_basics"],
+      "description": "useState, useEffect, custom hooks"
+    },
+    "typescript": {
+      "name": "TypeScript",
+      "category": "programming",
+      "difficulty": 0.55,
+      "estimated_hours": 15,
+      "prerequisites": ["javascript", "ts_basics"],
+      "description": "Type safety for JavaScript"
+    },
+    "ts_basics": {
+      "name": "TypeScript Basics",
+      "category": "programming",
+      "difficulty": 0.45,
+      "estimated_hours": 8,
+      "prerequisites": ["javascript"],
+      "description": "Types, interfaces, generics"
+    },
+    "responsive_design": {
+      "name": "Responsive Design",
+      "category": "design",
+      "difficulty": 0.5,
+      "estimated_hours": 10,
+      "prerequisites": ["css_layout", "media_queries"],
+      "description": "Mobile-first, adaptive layouts"
+    },
+    "media_queries": {
+      "name": "Media Queries",
+      "category": "design",
+      "difficulty": 0.35,
+      "estimated_hours": 4,
+      "prerequisites": ["css_fundamentals"],
+      "description": "Breakpoints, responsive units"
+    },
+    "git": {
+      "name": "Git",
+      "category": "tooling",
+      "difficulty": 0.4,
+      "estimated_hours": 8,
+      "prerequisites": ["git_basics", "git_branching"],
+      "description": "Version control mastery"
+    },
+    "git_basics": {
+      "name": "Git Basics",
+      "category": "tooling",
+      "difficulty": 0.25,
+      "estimated_hours": 4,
+      "prerequisites": [],
+      "description": "Init, add, commit, push, pull"
+    },
+    "git_branching": {
+      "name": "Git Branching",
+      "category": "tooling",
+      "difficulty": 0.4,
+      "estimated_hours": 5,
+      "prerequisites": ["git_basics"],
+      "description": "Branches, merging, rebasing, conflicts"
+    },
+    "testing": {
+      "name": "Testing",
+      "category": "quality",
+      "difficulty": 0.5,
+      "estimated_hours": 12,
+      "prerequisites": ["javascript", "testing_basics"],
+      "description": "Jest, React Testing Library, Cypress"
+    },
+    "testing_basics": {
+      "name": "Testing Basics",
+      "category": "quality",
+      "difficulty": 0.35,
+      "estimated_hours": 5,
+      "prerequisites": ["js_basics"],
+      "description": "Unit tests, assertions, test runners"
+    },
+    "databases": {
+      "name": "Databases",
+      "category": "data",
+      "difficulty": 0.6,
+      "estimated_hours": 20,
+      "prerequisites": ["sql", "nosql_basics", "db_design"],
+      "description": "Complete database proficiency"
+    },
+    "nosql_basics": {
+      "name": "NoSQL Basics",
+      "category": "data",
+      "difficulty": 0.45,
+      "estimated_hours": 8,
+      "prerequisites": [],
+      "description": "Document stores, key-value, MongoDB"
+    },
+    "db_design": {
+      "name": "Database Design",
+      "category": "data",
+      "difficulty": 0.55,
+      "estimated_hours": 10,
+      "prerequisites": ["sql_basics"],
+      "description": "Normalization, schemas, indexing"
+    },
+    "api_design": {
+      "name": "API Design",
+      "category": "core",
+      "difficulty": 0.6,
+      "estimated_hours": 15,
+      "prerequisites": ["rest_basics", "api_auth"],
+      "description": "RESTful API architecture"
+    },
+    "rest_basics": {
+      "name": "REST Basics",
+      "category": "core",
+      "difficulty": 0.4,
+      "estimated_hours": 6,
+      "prerequisites": [],
+      "description": "HTTP methods, status codes, endpoints"
+    },
+    "api_auth": {
+      "name": "API Authentication",
+      "category": "core",
+      "difficulty": 0.55,
+      "estimated_hours": 8,
+      "prerequisites": ["rest_basics"],
+      "description": "JWT, OAuth, session management"
+    },
+    "system_design": {
+      "name": "System Design",
+      "category": "architecture",
+      "difficulty": 0.8,
+      "estimated_hours": 25,
+      "prerequisites": ["api_design", "databases", "caching_basics"],
+      "description": "Scalable system architecture"
+    },
+    "caching_basics": {
+      "name": "Caching",
+      "category": "architecture",
+      "difficulty": 0.5,
+      "estimated_hours": 6,
+      "prerequisites": [],
+      "description": "Redis, caching strategies, invalidation"
+    },
+    "docker": {
+      "name": "Docker",
+      "category": "devops",
+      "difficulty": 0.55,
+      "estimated_hours": 12,
+      "prerequisites": ["docker_basics", "docker_compose"],
+      "description": "Containerization proficiency"
+    },
+    "docker_basics": {
+      "name": "Docker Basics",
+      "category": "devops",
+      "difficulty": 0.4,
+      "estimated_hours": 6,
+      "prerequisites": [],
+      "description": "Images, containers, Dockerfile"
+    },
+    "docker_compose": {
+      "name": "Docker Compose",
+      "category": "devops",
+      "difficulty": 0.5,
+      "estimated_hours": 5,
+      "prerequisites": ["docker_basics"],
+      "description": "Multi-container applications"
+    },
+    "security": {
+      "name": "Security",
+      "category": "core",
+      "difficulty": 0.65,
+      "estimated_hours": 15,
+      "prerequisites": ["api_auth", "security_basics"],
+      "description": "Application security"
+    },
+    "security_basics": {
+      "name": "Security Basics",
+      "category": "core",
+      "difficulty": 0.45,
+      "estimated_hours": 8,
+      "prerequisites": [],
+      "description": "OWASP top 10, XSS, CSRF, SQL injection"
+    },
+    "product_strategy": {
+      "name": "Product Strategy",
+      "category": "core",
+      "difficulty": 0.7,
+      "estimated_hours": 20,
+      "prerequisites": ["user_research", "data_analysis_basics"],
+      "description": "Product vision and roadmap"
+    },
+    "user_research": {
+      "name": "User Research",
+      "category": "research",
+      "difficulty": 0.55,
+      "estimated_hours": 15,
+      "prerequisites": ["interview_skills"],
+      "description": "User interviews, surveys, personas"
+    },
+    "interview_skills": {
+      "name": "Interview Skills",
+      "category": "research",
+      "difficulty": 0.35,
+      "estimated_hours": 5,
+      "prerequisites": [],
+      "description": "Conducting effective user interviews"
+    },
+    "data_analysis": {
+      "name": "Data Analysis",
+      "category": "analytics",
+      "difficulty": 0.55,
+      "estimated_hours": 15,
+      "prerequisites": ["data_analysis_basics", "basic_statistics"],
+      "description": "Metrics, funnels, A/B testing"
+    },
+    "data_analysis_basics": {
+      "name": "Data Analysis Basics",
+      "category": "analytics",
+      "difficulty": 0.35,
+      "estimated_hours": 8,
+      "prerequisites": [],
+      "description": "Spreadsheets, basic metrics, KPIs"
+    },
+    "communication": {
+      "name": "Communication",
+      "category": "soft_skills",
+      "difficulty": 0.4,
+      "estimated_hours": 10,
+      "prerequisites": ["presentation_skills"],
+      "description": "Stakeholder management, writing"
+    },
+    "presentation_skills": {
+      "name": "Presentation Skills",
+      "category": "soft_skills",
+      "difficulty": 0.3,
+      "estimated_hours": 5,
+      "prerequisites": [],
+      "description": "Slide design, public speaking"
+    },
+    "technical_literacy": {
+      "name": "Technical Literacy",
+      "category": "technical",
+      "difficulty": 0.45,
+      "estimated_hours": 10,
+      "prerequisites": [],
+      "description": "Understanding engineering concepts"
+    },
+    "agile": {
+      "name": "Agile / Scrum",
+      "category": "methodology",
+      "difficulty": 0.4,
+      "estimated_hours": 8,
+      "prerequisites": ["agile_basics"],
+      "description": "Sprint planning, retrospectives"
+    },
+    "agile_basics": {
+      "name": "Agile Basics",
+      "category": "methodology",
+      "difficulty": 0.25,
+      "estimated_hours": 4,
+      "prerequisites": [],
+      "description": "Manifesto, principles, user stories"
+    },
+    "ux_design": {
+      "name": "UX Design Basics",
+      "category": "design",
+      "difficulty": 0.5,
+      "estimated_hours": 12,
+      "prerequisites": ["wireframing", "user_flows"],
+      "description": "Design thinking, usability"
+    },
+    "wireframing": {
+      "name": "Wireframing",
+      "category": "design",
+      "difficulty": 0.3,
+      "estimated_hours": 5,
+      "prerequisites": [],
+      "description": "Low-fi and hi-fi wireframes"
+    },
+    "user_flows": {
+      "name": "User Flows",
+      "category": "design",
+      "difficulty": 0.35,
+      "estimated_hours": 4,
+      "prerequisites": [],
+      "description": "Mapping user journeys and flows"
+    },
+    "linux": {
+      "name": "Linux",
+      "category": "core",
+      "difficulty": 0.55,
+      "estimated_hours": 15,
+      "prerequisites": ["linux_basics", "shell_scripting"],
+      "description": "Linux system administration"
+    },
+    "linux_basics": {
+      "name": "Linux Basics",
+      "category": "core",
+      "difficulty": 0.3,
+      "estimated_hours": 6,
+      "prerequisites": [],
+      "description": "File system, commands, permissions"
+    },
+    "shell_scripting": {
+      "name": "Shell Scripting",
+      "category": "core",
+      "difficulty": 0.5,
+      "estimated_hours": 8,
+      "prerequisites": ["linux_basics"],
+      "description": "Bash scripts, automation"
+    },
+    "kubernetes": {
+      "name": "Kubernetes",
+      "category": "orchestration",
+      "difficulty": 0.8,
+      "estimated_hours": 25,
+      "prerequisites": ["docker", "k8s_basics"],
+      "description": "Container orchestration"
+    },
+    "k8s_basics": {
+      "name": "K8s Basics",
+      "category": "orchestration",
+      "difficulty": 0.6,
+      "estimated_hours": 10,
+      "prerequisites": ["docker_basics"],
+      "description": "Pods, services, deployments"
+    },
+    "ci_cd": {
+      "name": "CI/CD",
+      "category": "core",
+      "difficulty": 0.6,
+      "estimated_hours": 12,
+      "prerequisites": ["git", "ci_basics"],
+      "description": "Pipeline automation"
+    },
+    "ci_basics": {
+      "name": "CI Basics",
+      "category": "core",
+      "difficulty": 0.4,
+      "estimated_hours": 5,
+      "prerequisites": ["git_basics"],
+      "description": "GitHub Actions, basic pipelines"
+    },
+    "cloud_platforms": {
+      "name": "Cloud Platforms",
+      "category": "infrastructure",
+      "difficulty": 0.7,
+      "estimated_hours": 20,
+      "prerequisites": ["cloud_basics", "networking"],
+      "description": "AWS/GCP/Azure services"
+    },
+    "cloud_basics": {
+      "name": "Cloud Basics",
+      "category": "infrastructure",
+      "difficulty": 0.4,
+      "estimated_hours": 8,
+      "prerequisites": [],
+      "description": "Compute, storage, basic services"
+    },
+    "networking": {
+      "name": "Networking",
+      "category": "fundamentals",
+      "difficulty": 0.55,
+      "estimated_hours": 12,
+      "prerequisites": ["networking_basics"],
+      "description": "TCP/IP, DNS, load balancing"
+    },
+    "networking_basics": {
+      "name": "Networking Basics",
+      "category": "fundamentals",
+      "difficulty": 0.35,
+      "estimated_hours": 6,
+      "prerequisites": [],
+      "description": "IPs, ports, HTTP, protocols"
+    },
+    "monitoring": {
+      "name": "Monitoring",
+      "category": "observability",
+      "difficulty": 0.55,
+      "estimated_hours": 10,
+      "prerequisites": ["monitoring_basics"],
+      "description": "Prometheus, Grafana, alerting"
+    },
+    "monitoring_basics": {
+      "name": "Monitoring Basics",
+      "category": "observability",
+      "difficulty": 0.35,
+      "estimated_hours": 5,
+      "prerequisites": [],
+      "description": "Metrics, logs, basic dashboards"
+    },
+    "mlops": {
+      "name": "MLOps",
+      "category": "engineering",
+      "difficulty": 0.75,
+      "estimated_hours": 20,
+      "prerequisites": ["machine_learning", "docker", "ci_cd"],
+      "description": "ML deployment and monitoring"
+    },
+    "data_engineering": {
+      "name": "Data Engineering",
+      "category": "data",
+      "difficulty": 0.7,
+      "estimated_hours": 20,
+      "prerequisites": ["sql", "python", "etl_basics"],
+      "description": "Data pipelines and big data"
+    },
+    "etl_basics": {
+      "name": "ETL Basics",
+      "category": "data",
+      "difficulty": 0.45,
+      "estimated_hours": 8,
+      "prerequisites": ["sql_basics", "python_basics"],
+      "description": "Extract, transform, load pipelines"
+    }
+  }
+}
