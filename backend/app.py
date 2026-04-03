@@ -50,8 +50,8 @@ frontend_base_url = os.environ.get("FRONTEND_BASE_URL", allowed_origins[0]).rstr
 app.secret_key = os.environ.get("FLASK_SECRET_KEY", "dev-change-me")
 app.config.update(
     SESSION_COOKIE_HTTPONLY=True,
-    SESSION_COOKIE_SAMESITE="Lax",
-    SESSION_COOKIE_SECURE=os.environ.get("FLASK_COOKIE_SECURE", "0") == "1",
+    SESSION_COOKIE_SAMESITE="None",
+    SESSION_COOKIE_SECURE=True,
 )
 
 CORS(app, origins=allowed_origins, supports_credentials=True)
