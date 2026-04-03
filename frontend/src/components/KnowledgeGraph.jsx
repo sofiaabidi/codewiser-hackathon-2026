@@ -1,5 +1,6 @@
 import { useState, useEffect, useRef, useMemo, useCallback } from 'react';
 import { diagnoseGaps } from '../utils/api';
+import UiIcon from './UiIcon';
 
 export default function KnowledgeGraph({ gapReport, onStudyPlan, onBack, initialMastery }) {
   const [diagnosis, setDiagnosis] = useState(null);
@@ -202,12 +203,6 @@ export default function KnowledgeGraph({ gapReport, onStudyPlan, onBack, initial
     return '#285A48';
   };
 
-  const getNodeGlow = (node) => {
-    if (node.is_root_gap) return 'none';
-    if (node.mastery >= 0.6) return 'none';
-    return 'none';
-  };
-
   // Mastery
   const handleMasteryChange = (conceptId, value) => {
     setMasteryScores(prev => ({ ...prev, [conceptId]: parseFloat(value) / 100 }));
@@ -220,9 +215,6 @@ export default function KnowledgeGraph({ gapReport, onStudyPlan, onBack, initial
 
   const handleProceedToStudy = () => {
     if (!diagnosis) return;
-
-    // Build a set of root gap IDs for fast lookup
-    const rootGapIds = new Set(diagnosis.root_gaps.map(g => g.id));
 
     // Annotate each gap with is_root_gap flag
     const allGaps = [
@@ -309,7 +301,7 @@ export default function KnowledgeGraph({ gapReport, onStudyPlan, onBack, initial
             <span className="legend-item"><span className="legend-dot" style={{ background: '#285A48' }} /> Unknown</span>
           </span>
           <button className="btn-small" onClick={() => setShowMasteryInput(!showMasteryInput)}>
-            {showMasteryInput ? '✕ Close' : '✏️ Set Mastery'}
+            {showMasteryInput ? 'Close' : <><UiIcon name="edit" size={14} className="icon-inline" /> Set Mastery</>}
           </button>
         </div>
 
@@ -490,7 +482,7 @@ export default function KnowledgeGraph({ gapReport, onStudyPlan, onBack, initial
               ))}
           </div>
           <button className="analyze-btn" onClick={handleRediagnose} style={{ marginTop: 24 }}>
-            🔄 Re-diagnose with Scores
+            <UiIcon name="refresh" size={16} className="icon-inline" /> Re-diagnose with Scores
           </button>
         </div>
       )}
@@ -509,7 +501,7 @@ export default function KnowledgeGraph({ gapReport, onStudyPlan, onBack, initial
                 <span className="skill-category-badge">{gap.category}</span>
               </div>
               <div className="skill-breakdown-right">
-                <span className="weight-badge">🕐 {gap.estimated_hours}h</span>
+                <span className="weight-badge">{gap.estimated_hours}h</span>
                 <div className="proficiency-bar-container">
                   <div className="proficiency-bar-fill amber" style={{ width: `${gap.mastery * 100}%` }} />
                 </div>
@@ -556,7 +548,7 @@ export default function KnowledgeGraph({ gapReport, onStudyPlan, onBack, initial
       {/* Action */}
       <div className="report-actions">
         <button className="btn-primary" onClick={handleProceedToStudy}>
-          📅 Generate Study Plan →
+          <UiIcon name="calendar" size={16} className="icon-inline" /> Generate Study Plan →
         </button>
         <button className="btn-secondary" onClick={onBack}>
           ← Back

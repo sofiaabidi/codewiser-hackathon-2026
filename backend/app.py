@@ -5,8 +5,15 @@ study optimization, and spaced repetition.
 All deterministic — no LLMs.
 """
 
-from flask import Flask, jsonify, request
+import os
+from functools import wraps
+from typing import Optional
+from dotenv import load_dotenv
+load_dotenv()
+
+from flask import Flask, jsonify, request, redirect, session
 from flask_cors import CORS
+from authlib.integrations.flask_client import OAuth
 from engines.gap_analysis import get_all_roles, get_role_skills, analyze_gap
 from engines.knowledge_graph import get_concept_subgraph, diagnose_knowledge_gaps
 from engines.study_optimizer import (
@@ -17,7 +24,206 @@ from engines.study_optimizer import (
 from engines.mastery_update import compute_mastery_updates, filter_remaining_gaps
 
 app = Flask(__name__)
-CORS(app)
+
+from persistence import (
+    init_db,
+    upsert_user,
+    get_user,
+    list_study_sessions,
+    upsert_study_session,
+    get_study_session,
+    delete_study_session,
+)
+
+init_db()
+
+# CORS: we need cookie-based auth for /api/sessions and /api/auth/*.
+DEFAULT_ORIGINS = ["http://localhost:5173", "http://localhost:3000"]
+frontend_origins = os.environ.get("FRONTEND_ORIGINS", "")
+allowed_origins = [o.strip() for o in frontend_origins.split(",") if o.strip()]
+if not allowed_origins:
+    allowed_origins = DEFAULT_ORIGINS
+
+frontend_base_url = os.environ.get("FRONTEND_BASE_URL", allowed_origins[0]).rstrip("/")
+oauth_redirect_base_url = os.environ.get("OAUTH_REDIRECT_BASE_URL", "http://localhost:5000").rstrip("/")
+
+app.secret_key = os.environ.get("FLASK_SECRET_KEY", "dev-change-me")
+app.config.update(
+    SESSION_COOKIE_HTTPONLY=True,
+    SESSION_COOKIE_SAMESITE="Lax",
+    SESSION_COOKIE_SECURE=os.environ.get("FLASK_COOKIE_SECURE", "0") == "1",
+)
+
+CORS(app, origins=allowed_origins, supports_credentials=True)
+
+oauth = OAuth(app)
+
+
+def _oauth_is_configured(provider: str) -> bool:
+    if provider == "google":
+        return bool(os.environ.get("GOOGLE_CLIENT_ID")) and bool(os.environ.get("GOOGLE_CLIENT_SECRET"))
+    if provider == "github":
+        return bool(os.environ.get("GITHUB_CLIENT_ID")) and bool(os.environ.get("GITHUB_CLIENT_SECRET"))
+    return False
+
+
+oauth.register(
+    name="google",
+    client_id=os.environ.get("GOOGLE_CLIENT_ID", ""),
+    client_secret=os.environ.get("GOOGLE_CLIENT_SECRET", ""),
+    access_token_url="https://oauth2.googleapis.com/token",
+    authorize_url="https://accounts.google.com/o/oauth2/v2/auth",
+    api_base_url="https://openidconnect.googleapis.com/v1/",
+    client_kwargs={"scope": "openid email profile"},
+)
+
+oauth.register(
+    name="github",
+    client_id=os.environ.get("GITHUB_CLIENT_ID", ""),
+    client_secret=os.environ.get("GITHUB_CLIENT_SECRET", ""),
+    access_token_url="https://github.com/login/oauth/access_token",
+    authorize_url="https://github.com/login/oauth/authorize",
+    api_base_url="https://api.github.com/",
+    client_kwargs={"scope": "read:user user:email"},
+)
+
+
+def _require_login() -> Optional[str]:
+    return session.get("user_id")
+
+
+# ─── Auth ───────────────────────────────────────────────────────
+@app.route("/api/auth/me", methods=["GET"])
+def auth_me():
+    user_id = _require_login()
+    if not user_id:
+        return jsonify({"user": None})
+    user = get_user(user_id)
+    return jsonify({"user": user})
+
+
+@app.route("/api/auth/logout", methods=["POST"])
+def auth_logout():
+    session.clear()
+    return jsonify({"ok": True})
+
+
+@app.route("/api/auth/login/google", methods=["GET"])
+def auth_login_google():
+    if not _oauth_is_configured("google"):
+        return jsonify({"error": "Google OAuth not configured"}), 500
+    redirect_uri = f"{oauth_redirect_base_url}/api/auth/callback/google"
+    return oauth.google.authorize_redirect(redirect_uri)
+
+
+@app.route("/api/auth/login/github", methods=["GET"])
+def auth_login_github():
+    if not _oauth_is_configured("github"):
+        return jsonify({"error": "GitHub OAuth not configured"}), 500
+    redirect_uri = f"{oauth_redirect_base_url}/api/auth/callback/github"
+    return oauth.github.authorize_redirect(redirect_uri)
+
+
+@app.route("/api/auth/callback/google", methods=["GET"])
+def auth_callback_google():
+    try:
+        oauth.google.authorize_access_token()
+        resp = oauth.google.get("userinfo")
+        user_info = resp.json()
+        provider_sub = str(user_info.get("sub") or "")
+        email = user_info.get("email")
+        name = user_info.get("name")
+        if not provider_sub:
+            return redirect(f"{frontend_base_url}/?auth=error")
+
+        user_id = f"google:{provider_sub}"
+        upsert_user(user_id, provider="google", email=email, name=name)
+        session["user_id"] = user_id
+        return redirect(f"{frontend_base_url}/?auth=success")
+    except Exception:
+        return redirect(f"{frontend_base_url}/?auth=error")
+
+
+@app.route("/api/auth/callback/github", methods=["GET"])
+def auth_callback_github():
+    try:
+        oauth.github.authorize_access_token()
+        user_info = oauth.github.get("user").json()
+        provider_sub = str(user_info.get("id") or "")
+
+        email = None
+        try:
+            emails = oauth.github.get("user/emails").json()
+            if isinstance(emails, list):
+                primary = next((e for e in emails if e.get("primary")), None)
+                email = primary.get("email") if primary else (emails[0].get("email") if emails else None)
+        except Exception:
+            email = None
+
+        name = user_info.get("name") or user_info.get("login")
+        if not provider_sub:
+            return redirect(f"{frontend_base_url}/?auth=error")
+
+        user_id = f"github:{provider_sub}"
+        upsert_user(user_id, provider="github", email=email, name=name)
+        session["user_id"] = user_id
+        return redirect(f"{frontend_base_url}/?auth=success")
+    except Exception:
+        return redirect(f"{frontend_base_url}/?auth=error")
+
+
+# ─── Study Session Persistence ────────────────────────────────
+@app.route("/api/sessions", methods=["GET"])
+def sessions_list():
+    user_id = _require_login()
+    if not user_id:
+        return jsonify({"error": "Unauthorized"}), 401
+    return jsonify({"sessions": list_study_sessions(user_id)})
+
+
+@app.route("/api/sessions/<int:session_id>", methods=["GET"])
+def sessions_get(session_id: int):
+    user_id = _require_login()
+    if not user_id:
+        return jsonify({"error": "Unauthorized"}), 401
+    session_data = get_study_session(user_id, session_id)
+    if not session_data:
+        return jsonify({"error": "Session not found"}), 404
+    return jsonify({"session": session_data})
+
+
+@app.route("/api/sessions/<int:session_id>", methods=["DELETE"])
+def sessions_delete(session_id: int):
+    user_id = _require_login()
+    if not user_id:
+        return jsonify({"error": "Unauthorized"}), 401
+    delete_study_session(user_id, session_id)
+    return jsonify({"ok": True})
+
+
+@app.route("/api/sessions/save", methods=["POST"])
+def sessions_save():
+    user_id = _require_login()
+    if not user_id:
+        return jsonify({"error": "Unauthorized"}), 401
+
+    data = request.get_json(silent=True) or {}
+    role_id = data.get("role_id")
+    role_title = data.get("role_title")
+    step_key = data.get("step_key")
+    state = data.get("state")
+
+    if not role_id or not step_key or state is None:
+        return jsonify({"error": "role_id, step_key, and state are required"}), 400
+
+    session_id = upsert_study_session(
+        user_id=user_id,
+        role_id=role_id,
+        role_title=role_title,
+        step_key=step_key,
+        state=state,
+    )
+    return jsonify({"session_id": session_id})
 
 
 # ─── Health Check ────────────────────────────────────────────────
@@ -106,7 +312,7 @@ def study_plan():
         "mastery_scores": { "concept_id": 0.0-1.0, ... },
         "career_weights": { "skill_id": weight, ... },
         "daily_hours": 4,
-        "total_days": 14
+        "total_days": 14 (optional; if omitted, computed automatically)
     }
     """
     data = request.get_json()
@@ -117,7 +323,12 @@ def study_plan():
     mastery_scores = data.get("mastery_scores", {})
     career_weights = data.get("career_weights", {})
     daily_hours = data.get("daily_hours", 4)
-    total_days = data.get("total_days", 14)
+    total_days = data.get("total_days")
+    if total_days is not None:
+        try:
+            total_days = int(total_days)
+        except Exception:
+            total_days = None
 
     if not gaps:
         return jsonify({"error": "'gaps' is required"}), 400

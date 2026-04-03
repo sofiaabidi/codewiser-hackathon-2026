@@ -1,173 +1,419 @@
 {
   "machine_learning": [
-    {
-      "kind": "Course",
-      "title": "Google Developers Machine Learning Crash Course",
-      "url": "https://developers.google.com/machine-learning/crash-course"
-    },
-    {
-      "kind": "Video",
-      "title": "Introduction to Machine Learning (free) - StatQuest playlist",
-      "url": "https://www.youtube.com/@statquest"
-    },
-    {
-      "kind": "Guide",
-      "title": "Scikit-learn Tutorials (practical ML with Python)",
-      "url": "https://scikit-learn.org/stable/tutorial/index.html"
-    }
+    {"kind": "Course","title": "Machine Learning by Andrew Ng","url": "https://www.coursera.org/learn/machine-learning"},
+    {"kind": "Guide","title": "Scikit-learn Tutorials","url": "https://scikit-learn.org/stable/tutorial/index.html"},
+    {"kind": "Website","title": "Google ML Crash Course","url": "https://developers.google.com/machine-learning/crash-course"}
   ],
+
   "linear_algebra": [
-    {
-      "kind": "Website",
-      "title": "Khan Academy: Linear Algebra",
-      "url": "https://www.khanacademy.org/math/linear-algebra"
-    },
-    {
-      "kind": "Course",
-      "title": "MIT OCW 18.06SC: Linear Algebra",
-      "url": "https://ocw.mit.edu/courses/18-06sc-linear-algebra-spring-2011/"
-    }
+    {"kind": "Course","title": "MIT OCW Linear Algebra","url": "https://ocw.mit.edu/courses/18-06sc-linear-algebra-spring-2011/"},
+    {"kind": "Guide","title": "3Blue1Brown Linear Algebra","url": "https://www.youtube.com/playlist?list=PLZHQObOWTQDMsr9K-rj53DwVRMYO3t5Yr"},
+    {"kind": "Website","title": "Khan Academy Linear Algebra","url": "https://www.khanacademy.org/math/linear-algebra"}
   ],
+
   "matrices": [
-    {
-      "kind": "Website",
-      "title": "Khan Academy: Matrices",
-      "url": "https://www.khanacademy.org/math/linear-algebra/matrix-transformations"
-    },
-    {
-      "kind": "Guide",
-      "title": "MIT OCW Linear Algebra (Matrices section)",
-      "url": "https://ocw.mit.edu/courses/18-06sc-linear-algebra-spring-2011/pages/unit-i-matrices-and-gaussian-elimination/"
-    }
+    {"kind": "Course","title": "Linear Algebra (MIT)","url": "https://ocw.mit.edu/courses/18-06sc-linear-algebra-spring-2011/"},
+    {"kind": "Guide","title": "Paul’s Notes - Matrices","url": "https://tutorial.math.lamar.edu/Classes/LinAlg/Matrices.aspx"},
+    {"kind": "Website","title": "Khan Academy Matrices","url": "https://www.khanacademy.org/math/linear-algebra/matrix-transformations"}
   ],
+
   "vectors": [
-    {
-      "kind": "Website",
-      "title": "Khan Academy: Vectors",
-      "url": "https://www.khanacademy.org/math/linear-algebra/vectors-in-spaces"
-    },
-    {
-      "kind": "Guide",
-      "title": "MIT OCW Linear Algebra (Vectors section)",
-      "url": "https://ocw.mit.edu/courses/18-06sc-linear-algebra-spring-2011/pages/unit-ii-vector-spaces/"
-    }
+    {"kind": "Course","title": "Linear Algebra (MIT)","url": "https://ocw.mit.edu/courses/18-06sc-linear-algebra-spring-2011/"},
+    {"kind": "Guide","title": "Essence of Vectors","url": "https://www.youtube.com/watch?v=fNk_zzaMoSs"},
+    {"kind": "Website","title": "Khan Academy Vectors","url": "https://www.khanacademy.org/math/linear-algebra/vectors-in-spaces"}
   ],
+
   "eigenvalues": [
-    {
-      "kind": "Website",
-      "title": "Khan Academy: Eigenvalues and eigenvectors",
-      "url": "https://www.khanacademy.org/math/linear-algebra/eigenvalues-and-eigenvectors"
-    },
-    {
-      "kind": "Guide",
-      "title": "MIT OCW Linear Algebra (Eigenvalues section)",
-      "url": "https://ocw.mit.edu/courses/18-06sc-linear-algebra-spring-2011/pages/unit-iv-eigenvalues-and-eigenvectors/"
-    }
+    {"kind": "Course","title": "Linear Algebra (MIT)","url": "https://ocw.mit.edu/courses/18-06sc-linear-algebra-spring-2011/"},
+    {"kind": "Guide","title": "Eigenvalues Explained (3Blue1Brown)","url": "https://www.youtube.com/watch?v=PFDu9oVAE-g"},
+    {"kind": "Website","title": "Khan Academy Eigenvalues","url": "https://www.khanacademy.org/math/linear-algebra/eigenvalues-and-eigenvectors"}
   ],
+
   "probability": [
-    {
-      "kind": "Website",
-      "title": "Khan Academy: Probability",
-      "url": "https://www.khanacademy.org/math/statistics-probability"
-    },
-    {
-      "kind": "Guide",
-      "title": "MIT OpenCourseWare 18.05 (Probability & Random Variables - resources)",
-      "url": "https://ocw.mit.edu/courses/18-05-introduction-to-probability-and-statistics-spring-2014/"
-    }
+    {"kind": "Course","title": "MIT Probability","url": "https://ocw.mit.edu/courses/18-05-introduction-to-probability-and-statistics/"},
+    {"kind": "Guide","title": "StatQuest Probability","url": "https://www.youtube.com/@statquest"},
+    {"kind": "Website","title": "Khan Academy Probability","url": "https://www.khanacademy.org/math/statistics-probability"}
   ],
+
   "basic_statistics": [
-    {
-      "kind": "Website",
-      "title": "Khan Academy: Statistics basics",
-      "url": "https://www.khanacademy.org/math/statistics-probability"
-    },
-    {
-      "kind": "Guide",
-      "title": "StatQuest (Statistics explanations)",
-      "url": "https://www.youtube.com/@statquest"
-    }
+    {"kind": "Course","title": "Statistics with Python","url": "https://www.coursera.org/specializations/statistics-with-python"},
+    {"kind": "Guide","title": "StatQuest Statistics","url": "https://www.youtube.com/@statquest"},
+    {"kind": "Website","title": "Khan Academy Statistics","url": "https://www.khanacademy.org/math/statistics-probability"}
   ],
+
   "combinatorics": [
-    {
-      "kind": "Website",
-      "title": "Khan Academy: Combinatorics",
-      "url": "https://www.khanacademy.org/math/combinatorics-probability"
-    }
+    {"kind": "Course","title": "Discrete Math (Coursera)","url": "https://www.coursera.org/learn/discrete-mathematics"},
+    {"kind": "Guide","title": "Brilliant Combinatorics","url": "https://brilliant.org/courses/combinatorics/"},
+    {"kind": "Website","title": "Khan Academy Counting","url": "https://www.khanacademy.org/math/statistics-probability/counting-permutations-and-combinations"}
   ],
+
   "python_basics": [
-    {
-      "kind": "Course",
-      "title": "Python official tutorial (Beginner-friendly)",
-      "url": "https://docs.python.org/3/tutorial/"
-    },
-    {
-      "kind": "Guide",
-      "title": "Real Python: Python basics for beginners",
-      "url": "https://realpython.com/tutorials/python/"
-    }
+    {"kind": "Course","title": "Python for Everybody","url": "https://www.coursera.org/specializations/python"},
+    {"kind": "Guide","title": "Real Python","url": "https://realpython.com/"},
+    {"kind": "Website","title": "Python Docs","url": "https://docs.python.org/3/tutorial/"}
   ],
+
   "python_libraries": [
-    {
-      "kind": "Guide",
-      "title": "TensorFlow tutorials (modeling basics)",
-      "url": "https://www.tensorflow.org/tutorials"
-    },
-    {
-      "kind": "Guide",
-      "title": "PyTorch tutorials (building blocks)",
-      "url": "https://pytorch.org/tutorials/"
-    },
-    {
-      "kind": "Guide",
-      "title": "Scikit-learn user guide",
-      "url": "https://scikit-learn.org/stable/user_guide.html"
-    }
+    {"kind": "Course","title": "Applied Data Science with Python","url": "https://www.coursera.org/specializations/data-science-python"},
+    {"kind": "Guide","title": "TensorFlow Tutorials","url": "https://www.tensorflow.org/tutorials"},
+    {"kind": "Website","title": "PyTorch Tutorials","url": "https://pytorch.org/tutorials/"}
   ],
+
   "numpy_pandas": [
-    {
-      "kind": "Website",
-      "title": "NumPy quickstart",
-      "url": "https://numpy.org/doc/stable/user/quickstart.html"
-    },
-    {
-      "kind": "Website",
-      "title": "Pandas User Guide",
-      "url": "https://pandas.pydata.org/pandas-docs/stable/user_guide/index.html"
-    }
+    {"kind": "Course","title": "Data Analysis with Python","url": "https://www.freecodecamp.org/learn/data-analysis-with-python/"},
+    {"kind": "Guide","title": "Pandas Docs","url": "https://pandas.pydata.org/docs/"},
+    {"kind": "Website","title": "NumPy Quickstart","url": "https://numpy.org/doc/stable/user/quickstart.html"}
   ],
+
   "sql": [
-    {
-      "kind": "Website",
-      "title": "SQLBolt (hands-on SQL lessons)",
-      "url": "https://sqlbolt.com/"
-    },
-    {
-      "kind": "Website",
-      "title": "Mode SQL Tutorial",
-      "url": "https://mode.com/sql-tutorial/"
-    }
+    {"kind": "Course","title": "SQL for Data Science","url": "https://www.coursera.org/learn/sql-data-science"},
+    {"kind": "Guide","title": "Mode SQL Tutorial","url": "https://mode.com/sql-tutorial/"},
+    {"kind": "Website","title": "SQLBolt","url": "https://sqlbolt.com/"}
   ],
+
   "sql_basics": [
-    {
-      "kind": "Website",
-      "title": "SQLBolt: SELECT queries",
-      "url": "https://sqlbolt.com/lesson/select_queries"
-    }
+    {"kind": "Course","title": "Intro to SQL (Kaggle)","url": "https://www.kaggle.com/learn/intro-to-sql"},
+    {"kind": "Guide","title": "SQL SELECT Guide","url": "https://mode.com/sql-tutorial/sql-select/"},
+    {"kind": "Website","title": "SQLBolt SELECT","url": "https://sqlbolt.com/lesson/select_queries"}
   ],
+
   "sql_joins": [
-    {
-      "kind": "Website",
-      "title": "Mode SQL Tutorial: Joins",
-      "url": "https://mode.com/sql-tutorial/sql-join/"
-    }
+    {"kind": "Course","title": "Advanced SQL (Kaggle)","url": "https://www.kaggle.com/learn/advanced-sql"},
+    {"kind": "Guide","title": "SQL Joins Explained","url": "https://mode.com/sql-tutorial/sql-join/"},
+    {"kind": "Website","title": "W3Schools SQL Joins","url": "https://www.w3schools.com/sql/sql_join.asp"}
   ],
+
   "sql_aggregations": [
-    {
-      "kind": "Website",
-      "title": "SQL aggregations basics (GROUP BY)",
-      "url": "https://mode.com/sql-tutorial/sql-group-by/"
-    }
+    {"kind": "Course","title": "SQL Aggregations (Kaggle)","url": "https://www.kaggle.com/learn/intro-to-sql"},
+    {"kind": "Guide","title": "GROUP BY Guide","url": "https://mode.com/sql-tutorial/sql-group-by/"},
+    {"kind": "Website","title": "W3Schools GROUP BY","url": "https://www.w3schools.com/sql/sql_groupby.asp"}
+  ],
+
+  "agile": [
+    {"kind": "Course","title": "Agile Development","url": "https://www.coursera.org/specializations/agile-development"},
+    {"kind": "Guide","title": "Atlassian Agile","url": "https://www.atlassian.com/agile"},
+    {"kind": "Website","title": "Scrum Guide","url": "https://scrumguides.org/"}
+  ],
+
+  "api_auth": [
+    {"kind": "Course","title": "API Security Fundamentals","url": "https://www.udemy.com/course/api-security/"},
+    {"kind": "Guide","title": "OAuth 2.0 Guide","url": "https://oauth.net/2/"},
+    {"kind": "Website","title": "Auth0 Docs","url": "https://auth0.com/docs"}
+  ],
+
+  "api_design": [
+    {"kind": "Course","title": "REST API Design","url": "https://www.udemy.com/course/api-and-web-service-introduction/"},
+    {"kind": "Guide","title": "RESTful API Guide","url": "https://restfulapi.net/"},
+    {"kind": "Website","title": "MDN API Docs","url": "https://developer.mozilla.org/en-US/docs/Web/API"}
+  ],
+
+  "cloud_basics": [
+    {"kind": "Course","title": "AWS Cloud Practitioner","url": "https://www.aws.training/"},
+    {"kind": "Guide","title": "Google Cloud Training","url": "https://cloud.google.com/training"},
+    {"kind": "Website","title": "Azure Learn","url": "https://learn.microsoft.com/en-us/training/azure/"}
+  ],
+
+  "docker": [
+    {"kind": "Course","title": "Docker for Beginners","url": "https://www.youtube.com/watch?v=fqMOX6JJhGo"},
+    {"kind": "Guide","title": "Docker Docs","url": "https://docs.docker.com/get-started/"},
+    {"kind": "Website","title": "Play with Docker","url": "https://labs.play-with-docker.com/"}
+  ],
+
+  "kubernetes": [
+    {"kind": "Course","title": "Kubernetes Basics","url": "https://www.udemy.com/course/learn-kubernetes/"},
+    {"kind": "Guide","title": "Kubernetes Docs","url": "https://kubernetes.io/docs/home/"},
+    {"kind": "Website","title": "Katacoda Labs","url": "https://www.katacoda.com/courses/kubernetes"}
+  ],
+
+  "linux": [
+    {"kind": "Course","title": "Linux Basics","url": "https://www.edx.org/course/introduction-to-linux"},
+    {"kind": "Guide","title": "Linux Journey","url": "https://linuxjourney.com/"},
+    {"kind": "Website","title": "Ubuntu Docs","url": "https://ubuntu.com/tutorials"}
+  ],
+
+  "networking": [
+    {"kind": "Course","title": "Computer Networking","url": "https://www.coursera.org/learn/computer-networking"},
+    {"kind": "Guide","title": "Networking Fundamentals","url": "https://www.geeksforgeeks.org/computer-network-tutorials/"},
+    {"kind": "Website","title": "Cisco Networking Basics","url": "https://skillsforall.com/"}
+  ],
+
+  "security": [
+    {"kind": "Course","title": "Cybersecurity Fundamentals","url": "https://www.coursera.org/learn/ibm-cybersecurity-analyst"},
+    {"kind": "Guide","title": "OWASP Top 10","url": "https://owasp.org/www-project-top-ten/"},
+    {"kind": "Website","title": "PortSwigger Web Security Academy","url": "https://portswigger.net/web-security"}
+  ],
+
+  "system_design": [
+    {"kind": "Course","title": "Grokking System Design","url": "https://www.educative.io/courses/grokking-the-system-design-interview"},
+    {"kind": "Guide","title": "System Design Primer","url": "https://github.com/donnemartin/system-design-primer"},
+    {"kind": "Website","title": "High Scalability","url": "http://highscalability.com/"}
+  ],
+
+  "testing": [
+    {"kind": "Course","title": "Software Testing","url": "https://www.udemy.com/course/software-testing/"},
+    {"kind": "Guide","title": "Testing Guide (Guru99)","url": "https://www.guru99.com/software-testing.html"},
+    {"kind": "Website","title": "JUnit Docs","url": "https://junit.org/junit5/docs/current/user-guide/"}
+  ],
+
+  "mlops": [
+    {"kind": "Course","title": "MLOps Specialization","url": "https://www.coursera.org/specializations/mlops"},
+    {"kind": "Guide","title": "Made With ML","url": "https://madewithml.com/"},
+    {"kind": "Website","title": "MLflow Docs","url": "https://mlflow.org/docs/latest/index.html"}
+  ],
+
+  "communication": [
+    {"kind": "Course","title": "Improving Communication Skills","url": "https://www.coursera.org/learn/wharton-communication-skills"},
+    {"kind": "Guide","title": "Effective Communication Guide","url": "https://www.mindtools.com/pages/main/newMN_CMM.htm"},
+    {"kind": "Website","title": "Toastmasters Resources","url": "https://www.toastmasters.org/resources"}
+  ],
+
+  "interview_skills": [
+    {"kind": "Course","title": "Interview Preparation","url": "https://www.coursera.org/learn/interviewing-skills"},
+    {"kind": "Guide","title": "Tech Interview Handbook","url": "https://www.techinterviewhandbook.org/"},
+    {"kind": "Website","title": "LeetCode","url": "https://leetcode.com/"}
+  ],
+   "calculus_basics": [
+    {"kind": "Course","title": "Calculus 1 (MIT OCW)","url": "https://ocw.mit.edu/courses/18-01sc-single-variable-calculus-fall-2010/"},
+    {"kind": "Guide","title": "Paul's Online Math Notes (Calculus)","url": "https://tutorial.math.lamar.edu/Classes/CalcI/CalcI.aspx"},
+    {"kind": "Website","title": "Khan Academy Calculus","url": "https://www.khanacademy.org/math/calculus-1"}
+  ],
+
+  "basic_algebra": [
+    {"kind": "Course","title": "Algebra Basics (Khan Academy)","url": "https://www.khanacademy.org/math/algebra"},
+    {"kind": "Guide","title": "Paul’s Algebra Notes","url": "https://tutorial.math.lamar.edu/Classes/Alg/Alg.aspx"},
+    {"kind": "Website","title": "Algebra (CK-12)","url": "https://www.ck12.org/algebra/"}
+  ],
+
+  "data_engineering": [
+    {"kind": "Course","title": "Data Engineering on Google Cloud","url": "https://www.coursera.org/professional-certificates/gcp-data-engineering"},
+    {"kind": "Guide","title": "Data Engineering Zoomcamp","url": "https://github.com/DataTalksClub/data-engineering-zoomcamp"},
+    {"kind": "Website","title": "Apache Airflow Docs","url": "https://airflow.apache.org/docs/"}
+  ],
+
+  "db_design": [
+    {"kind": "Course","title": "Database Design","url": "https://www.coursera.org/learn/database-design"},
+    {"kind": "Guide","title": "Database Design Tutorial","url": "https://www.guru99.com/database-design.html"},
+    {"kind": "Website","title": "Vertabelo Academy","url": "https://academy.vertabelo.com/"}
+  ],
+
+  "cloud_platforms": [
+    {"kind": "Course","title": "Google Cloud Fundamentals","url": "https://www.coursera.org/learn/gcp-fundamentals"},
+    {"kind": "Guide","title": "AWS Docs","url": "https://docs.aws.amazon.com/"},
+    {"kind": "Website","title": "Azure Docs","url": "https://learn.microsoft.com/en-us/azure/"}
+  ],
+
+  "ci_basics": [
+    {"kind": "Course","title": "CI/CD for Beginners","url": "https://www.udemy.com/course/continuous-integration/"},
+    {"kind": "Guide","title": "CI Concepts Guide","url": "https://www.atlassian.com/continuous-delivery/ci-vs-ci-vs-cd"},
+    {"kind": "Website","title": "GitHub Actions Docs","url": "https://docs.github.com/en/actions"}
+  ],
+
+  "ci_cd": [
+    {"kind": "Course","title": "CI/CD Pipelines","url": "https://www.coursera.org/projects/ci-cd-pipeline"},
+    {"kind": "Guide","title": "CI/CD Explained","url": "https://www.redhat.com/en/topics/devops/what-is-ci-cd"},
+    {"kind": "Website","title": "GitLab CI Docs","url": "https://docs.gitlab.com/ee/ci/"}
+  ],
+
+  "caching_basics": [
+    {"kind": "Course","title": "System Design Fundamentals","url": "https://www.educative.io/courses/grokking-the-system-design-interview"},
+    {"kind": "Guide","title": "Caching Strategies","url": "https://www.geeksforgeeks.org/cache-memory-in-computer-organization/"},
+    {"kind": "Website","title": "Redis Docs","url": "https://redis.io/docs/"}
+  ],
+
+  "monitoring": [
+    {"kind": "Course","title": "Monitoring and Observability","url": "https://www.coursera.org/learn/cloud-monitoring"},
+    {"kind": "Guide","title": "Prometheus Guide","url": "https://prometheus.io/docs/introduction/overview/"},
+    {"kind": "Website","title": "Grafana Docs","url": "https://grafana.com/docs/"}
+  ],
+
+  "monitoring_basics": [
+    {"kind": "Course","title": "Intro to Monitoring","url": "https://www.udemy.com/course/monitoring-systems/"},
+    {"kind": "Guide","title": "Observability Basics","url": "https://www.honeycomb.io/what-is-observability/"},
+    {"kind": "Website","title": "Datadog Docs","url": "https://docs.datadoghq.com/"}
+  ],
+
+  "nosql_basics": [
+    {"kind": "Course","title": "NoSQL Databases","url": "https://www.coursera.org/learn/nosql-databases"},
+    {"kind": "Guide","title": "MongoDB Guide","url": "https://www.mongodb.com/docs/manual/introduction/"},
+    {"kind": "Website","title": "Firebase Docs","url": "https://firebase.google.com/docs"}
+  ],
+
+  "etl_basics": [
+    {"kind": "Course","title": "ETL and Data Pipelines","url": "https://www.coursera.org/learn/data-pipelines"},
+    {"kind": "Guide","title": "ETL Concepts","url": "https://www.ibm.com/topics/etl"},
+    {"kind": "Website","title": "Apache Spark Docs","url": "https://spark.apache.org/docs/latest/"}
+  ],
+
+  "shell_scripting": [
+    {"kind": "Course","title": "Shell Scripting for Beginners","url": "https://www.udemy.com/course/shell-scripting/"},
+    {"kind": "Guide","title": "Bash Guide","url": "https://tldp.org/LDP/abs/html/"},
+    {"kind": "Website","title": "GNU Bash Docs","url": "https://www.gnu.org/software/bash/manual/"}
+  ],
+
+  "typescript": [
+    {"kind": "Course","title": "TypeScript Complete Guide","url": "https://www.udemy.com/course/understanding-typescript/"},
+    {"kind": "Guide","title": "TypeScript Handbook","url": "https://www.typescriptlang.org/docs/"},
+    {"kind": "Website","title": "TypeScript Playground","url": "https://www.typescriptlang.org/play"}
+  ],
+
+  "ts_basics": [
+    {"kind": "Course","title": "Intro to TypeScript","url": "https://www.coursera.org/projects/typescript"},
+    {"kind": "Guide","title": "TypeScript Basics Guide","url": "https://www.typescriptlang.org/docs/handbook/2/basic-types.html"},
+    {"kind": "Website","title": "TypeScript Docs","url": "https://www.typescriptlang.org/docs/"}
+  ],
+
+  "react_hooks": [
+    {"kind": "Course","title": "React Hooks Deep Dive","url": "https://www.udemy.com/course/react-hooks/"},
+    {"kind": "Guide","title": "React Hooks Docs","url": "https://react.dev/reference/react"},
+    {"kind": "Website","title": "useHooks Library","url": "https://usehooks.com/"}
+  ],
+
+  "js_async": [
+    {"kind": "Course","title": "Async JavaScript","url": "https://www.udemy.com/course/understand-javascript/"},
+    {"kind": "Guide","title": "Async JS Guide","url": "https://javascript.info/async"},
+    {"kind": "Website","title": "MDN Async JS","url": "https://developer.mozilla.org/en-US/docs/Learn/JavaScript/Asynchronous"}
+  ],
+
+  "js_dom": [
+    {"kind": "Course","title": "JavaScript DOM Course","url": "https://www.freecodecamp.org/learn/"},
+    {"kind": "Guide","title": "DOM Guide","url": "https://javascript.info/document"},
+    {"kind": "Website","title": "MDN DOM Docs","url": "https://developer.mozilla.org/en-US/docs/Web/API/Document_Object_Model"}
+  ],
+
+  "responsive_design": [
+    {"kind": "Course","title": "Responsive Web Design","url": "https://www.freecodecamp.org/learn/"},
+    {"kind": "Guide","title": "Responsive Design Guide","url": "https://developer.mozilla.org/en-US/docs/Learn/CSS/CSS_layout/Responsive_Design"},
+    {"kind": "Website","title": "CSS Tricks Responsive","url": "https://css-tricks.com/snippets/css/media-queries-for-standard-devices/"}
+  ],
+
+  "media_queries": [
+    {"kind": "Course","title": "CSS Layouts","url": "https://www.udemy.com/course/css-the-complete-guide-incl-flexbox-grid-sass/"},
+    {"kind": "Guide","title": "Media Queries Guide","url": "https://developer.mozilla.org/en-US/docs/Web/CSS/Media_Queries"},
+    {"kind": "Website","title": "W3Schools Media Queries","url": "https://www.w3schools.com/css/css3_mediaqueries.asp"}
+  ],
+
+  "product_strategy": [
+    {"kind": "Course","title": "Digital Product Management","url": "https://www.coursera.org/specializations/uva-darden-digital-product-management"},
+    {"kind": "Guide","title": "Product Strategy Guide","url": "https://www.productplan.com/learn/product-strategy/"},
+    {"kind": "Website","title": "Mind the Product","url": "https://www.mindtheproduct.com/"}
+  ],
+
+  "user_research": [
+    {"kind": "Course","title": "User Experience Research","url": "https://www.coursera.org/learn/user-research"},
+    {"kind": "Guide","title": "UX Research Guide","url": "https://www.nngroup.com/articles/which-ux-research-methods/"},
+    {"kind": "Website","title": "UX Collective","url": "https://uxdesign.cc/"}
+  ],
+
+  "wireframing": [
+    {"kind": "Course","title": "UI/UX Design","url": "https://www.coursera.org/professional-certificates/google-ux-design"},
+    {"kind": "Guide","title": "Wireframing Guide","url": "https://careerfoundry.com/en/blog/ux-design/what-is-a-wireframe-guide/"},
+    {"kind": "Website","title": "Figma Resources","url": "https://www.figma.com/resources/learn-design/"}
+  ],
+
+  "ux_design": [
+    {"kind": "Course","title": "Google UX Design Certificate","url": "https://www.coursera.org/professional-certificates/google-ux-design"},
+    {"kind": "Guide","title": "UX Design Guide","url": "https://www.interaction-design.org/literature/topics/ux-design"},
+    {"kind": "Website","title": "NNGroup UX Articles","url": "https://www.nngroup.com/articles/"}
+  ],
+
+  "presentation_skills": [
+    {"kind": "Course","title": "Presentation Skills","url": "https://www.coursera.org/learn/presentation-skills"},
+    {"kind": "Guide","title": "Presentation Guide","url": "https://www.mindtools.com/pages/article/newCS_96.htm"},
+    {"kind": "Website","title": "TED Talks","url": "https://www.ted.com/talks"}
+  ],
+
+  "technical_literacy": [
+    {"kind": "Course","title": "Digital Literacy","url": "https://www.coursera.org/learn/digital-literacy"},
+    {"kind": "Guide","title": "Technical Literacy Guide","url": "https://www.ibm.com/topics/digital-literacy"},
+    {"kind": "Website","title": "Google Digital Garage","url": "https://learndigital.withgoogle.com/"}
+  ],
+
+  "viz_principles": [
+    {"kind": "Course","title": "Data Visualization Fundamentals","url": "https://www.coursera.org/learn/datavisualization"},
+    {"kind": "Guide","title": "Visualization Principles","url": "https://www.storytellingwithdata.com/blog"},
+    {"kind": "Website","title": "Data Viz Catalogue","url": "https://datavizcatalogue.com/"}
+  ],
+  "data_analysis_basics": [
+    {"kind": "Course","title": "Data Analysis with Python","url": "https://www.freecodecamp.org/learn/data-analysis-with-python/"},
+    {"kind": "Guide","title": "Data Analysis Guide (Real Python)","url": "https://realpython.com/pandas-python-explore-dataset/"},
+    {"kind": "Website","title": "Kaggle Learn Data Analysis","url": "https://www.kaggle.com/learn"}
+  ],
+
+  "databases": [
+    {"kind": "Course","title": "Databases and SQL","url": "https://www.coursera.org/learn/sql-data-science"},
+    {"kind": "Guide","title": "Database Concepts","url": "https://www.geeksforgeeks.org/dbms/"},
+    {"kind": "Website","title": "Oracle Database Docs","url": "https://docs.oracle.com/en/database/"}
+  ],
+
+  "html_css": [
+    {"kind": "Course","title": "Responsive Web Design","url": "https://www.freecodecamp.org/learn/"},
+    {"kind": "Guide","title": "HTML + CSS Guide","url": "https://developer.mozilla.org/en-US/docs/Learn"},
+    {"kind": "Website","title": "W3Schools HTML CSS","url": "https://www.w3schools.com/"}
+  ],
+
+  "js_basics": [
+    {"kind": "Course","title": "JavaScript Basics","url": "https://www.freecodecamp.org/learn/javascript-algorithms-and-data-structures/"},
+    {"kind": "Guide","title": "JavaScript Fundamentals","url": "https://javascript.info/first-steps"},
+    {"kind": "Website","title": "MDN JS Basics","url": "https://developer.mozilla.org/en-US/docs/Learn/JavaScript"}
+  ],
+
+  "linux_basics": [
+    {"kind": "Course","title": "Introduction to Linux","url": "https://www.edx.org/course/introduction-to-linux"},
+    {"kind": "Guide","title": "Linux Journey","url": "https://linuxjourney.com/"},
+    {"kind": "Website","title": "Ubuntu Tutorials","url": "https://ubuntu.com/tutorials"}
+  ],
+
+  "networking_basics": [
+    {"kind": "Course","title": "Networking Fundamentals","url": "https://www.coursera.org/learn/computer-networking"},
+    {"kind": "Guide","title": "Networking Basics Guide","url": "https://www.geeksforgeeks.org/computer-network-tutorials/"},
+    {"kind": "Website","title": "Cisco Skills for All","url": "https://skillsforall.com/"}
+  ],
+
+  "python": [
+    {"kind": "Course","title": "Python for Everybody","url": "https://www.coursera.org/specializations/python"},
+    {"kind": "Guide","title": "Python Guide","url": "https://realpython.com/"},
+    {"kind": "Website","title": "Python Docs","url": "https://docs.python.org/3/"}
+  ],
+
+  "python_advanced": [
+    {"kind": "Course","title": "Advanced Python","url": "https://www.udemy.com/course/advanced-python-programming/"},
+    {"kind": "Guide","title": "Advanced Python Guide","url": "https://realpython.com/advanced-python/"},
+    {"kind": "Website","title": "Python Advanced Docs","url": "https://docs.python.org/3/tutorial/"}
+  ],
+
+  "python_oop": [
+    {"kind": "Course","title": "Python OOP","url": "https://www.coursera.org/projects/object-oriented-programming-python"},
+    {"kind": "Guide","title": "OOP in Python Guide","url": "https://realpython.com/python3-object-oriented-programming/"},
+    {"kind": "Website","title": "Python Classes Docs","url": "https://docs.python.org/3/tutorial/classes.html"}
+  ],
+
+  "react_basics": [
+    {"kind": "Course","title": "React for Beginners","url": "https://www.udemy.com/course/react-the-complete-guide-incl-redux/"},
+    {"kind": "Guide","title": "React Basics Docs","url": "https://react.dev/learn"},
+    {"kind": "Website","title": "freeCodeCamp React","url": "https://www.freecodecamp.org/news/tag/react/"}
+  ],
+
+  "rest_basics": [
+    {"kind": "Course","title": "REST APIs","url": "https://www.udemy.com/course/api-and-web-service-introduction/"},
+    {"kind": "Guide","title": "REST Guide","url": "https://restfulapi.net/"},
+    {"kind": "Website","title": "MDN REST","url": "https://developer.mozilla.org/en-US/docs/Glossary/REST"}
+  ],
+
+  "security_basics": [
+    {"kind": "Course","title": "Cybersecurity Basics","url": "https://www.coursera.org/learn/ibm-cybersecurity-analyst"},
+    {"kind": "Guide","title": "Security Basics Guide","url": "https://www.cloudflare.com/learning/security/"},
+    {"kind": "Website","title": "OWASP","url": "https://owasp.org/"}
+  ],
+
+  "testing_basics": [
+    {"kind": "Course","title": "Software Testing Basics","url": "https://www.udemy.com/course/software-testing/"},
+    {"kind": "Guide","title": "Testing Basics Guide","url": "https://www.guru99.com/software-testing.html"},
+    {"kind": "Website","title": "Testing Docs","url": "https://junit.org/junit5/docs/current/user-guide/"}
+  ],
+
+  "user_flows": [
+    {"kind": "Course","title": "UX Design","url": "https://www.coursera.org/professional-certificates/google-ux-design"},
+    {"kind": "Guide","title": "User Flow Guide","url": "https://www.nngroup.com/articles/user-journey-mapping/"},
+    {"kind": "Website","title": "UX Flow Examples","url": "https://uxdesign.cc/"}
   ]
 }
-

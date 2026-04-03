@@ -43,17 +43,18 @@ export async function diagnoseGaps(skillIds, masteryScores) {
   return res.json();
 }
 
-export async function generateStudyPlan(gaps, masteryScores, careerWeights, dailyHours = 4, totalDays = 14) {
+export async function generateStudyPlan(gaps, masteryScores, careerWeights, dailyHours = 4, totalDays = undefined) {
+  const body = {
+    gaps,
+    mastery_scores: masteryScores,
+    career_weights: careerWeights,
+    daily_hours: dailyHours,
+  };
+  if (typeof totalDays === 'number') body.total_days = totalDays;
   const res = await fetch(`${API_BASE}/study-plan`, {
     method: 'POST',
     headers: { 'Content-Type': 'application/json' },
-    body: JSON.stringify({
-      gaps,
-      mastery_scores: masteryScores,
-      career_weights: careerWeights,
-      daily_hours: dailyHours,
-      total_days: totalDays,
-    }),
+    body: JSON.stringify(body),
   });
   if (!res.ok) throw new Error('Failed to generate study plan');
   return res.json();

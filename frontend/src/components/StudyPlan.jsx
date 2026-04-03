@@ -2,6 +2,7 @@ import { useState, useEffect } from 'react';
 import { generateStudyPlan, generateSpacedRepetition, completeDay } from '../utils/api';
 import { recomputeGapReportAfterDiagnosis } from '../utils/gapReportSync';
 import topicResources from '../data/topicResources.json';
+import UiIcon from './UiIcon';
 
 export default function StudyPlan({
   studyData,
@@ -12,26 +13,30 @@ export default function StudyPlan({
   onUpdateStudyData,
   onViewGapReport,
 }) {
-  const [plan, setPlan] = useState(null);
-  const [repetition, setRepetition] = useState(null);
-  const [loading, setLoading] = useState(true);
+  const savedStudyPlan = studyData?.studyPlan ?? null;
+  const savedSpacedRepetition = studyData?.spacedRepetition ?? null;
+  const savedStudySettings = studyData?.studySettings ?? {};
+  const savedCompletedDays = Array.isArray(studyData?.completedDays) ? studyData.completedDays.map((d) => Number(d)) : [];
+
+  const [plan, setPlan] = useState(savedStudyPlan);
+  const [repetition, setRepetition] = useState(savedSpacedRepetition);
+  const [loading, setLoading] = useState(!(savedStudyPlan && savedSpacedRepetition));
   const [error, setError] = useState(null);
   const [activeTab, setActiveTab] = useState('plan');
   const [expandedDay, setExpandedDay] = useState(1);
-  const [dailyHours, setDailyHours] = useState(4);
-  const [totalDays, setTotalDays] = useState(14);
+  const [dailyHours, setDailyHours] = useState(savedStudySettings?.dailyHours ?? 4);
 
   // Iterative learning state
-  const [completedDays, setCompletedDays] = useState(new Set());
+  const [completedDays, setCompletedDays] = useState(() => new Set(savedCompletedDays));
   const [checkedTopics, setCheckedTopics] = useState(new Set());
   const [checkedReviews, setCheckedReviews] = useState(new Set());
   const [completing, setCompleting] = useState(false);
   const [masteryChanges, setMasteryChanges] = useState(null);
   const [currentMastery, setCurrentMastery] = useState({});
   const [currentGaps, setCurrentGaps] = useState([]);
-  const [updateCount, setUpdateCount] = useState(0);
 
   const [openResourcesFor, setOpenResourcesFor] = useState(new Set());
+  const effectiveTotalDays = plan?.summary?.total_days || savedStudyPlan?.summary?.total_days || 0;
 
   const toggleResourcesPanel = (key) => {
     setOpenResourcesFor(prev => {
@@ -43,6 +48,33 @@ export default function StudyPlan({
   };
 
   const getTopicResources = (topicId) => topicResources?.[topicId] || [];
+
+  const aggregateTopics = (topics = []) => {
+    const byId = new Map();
+    topics.forEach((t) => {
+      const existing = byId.get(t.topic_id);
+      if (!existing) {
+        byId.set(t.topic_id, { ...t });
+        return;
+      }
+      existing.minutes += t.minutes;
+    });
+    return Array.from(byId.values());
+  };
+
+  const aggregateReviews = (reviews = []) => {
+    const byKey = new Map();
+    reviews.forEach((r) => {
+      const key = `${r.topic_id}::${r.review_number}`;
+      const existing = byKey.get(key);
+      if (!existing) {
+        byKey.set(key, { ...r });
+        return;
+      }
+      existing.minutes += r.minutes;
+    });
+    return Array.from(byKey.values());
+  };
 
   const getLinkDomain = (url) => {
     try {
@@ -60,7 +92,7 @@ export default function StudyPlan({
     return 'Website';
   };
 
-  const { diagnosis, allGaps, masteryScores, careerWeights } = studyData;
+  const { allGaps, masteryScores, careerWeights } = studyData;
 
   // Initialize mastery state from props
   useEffect(() => {
@@ -69,6 +101,10 @@ export default function StudyPlan({
   }, []);
 
   useEffect(() => {
+    if (savedStudyPlan && savedSpacedRepetition) {
+      setLoading(false);
+      return;
+    }
     fetchPlan();
   }, []);
 
@@ -86,16 +122,24 @@ export default function StudyPlan({
         is_root_gap: g.is_root_gap || false,
       }));
 
-      const [planResult, repResult] = await Promise.all([
-        generateStudyPlan(gapsPayload, masteryScores, careerWeights, dailyHours, totalDays),
-        generateSpacedRepetition(
-          gapsPayload.map(g => ({ id: g.id, name: g.name, mastery: g.mastery })),
-          totalDays
-        ),
-      ]);
+      const planResult = await generateStudyPlan(gapsPayload, masteryScores, careerWeights, dailyHours);
+      const repResult = await generateSpacedRepetition(
+        gapsPayload.map(g => ({ id: g.id, name: g.name, mastery: g.mastery })),
+        Math.max(7, planResult?.summary?.total_days || 7)
+      );
 
       setPlan(planResult);
       setRepetition(repResult);
+
+      // Persist generated schedule so user can resume without regenerating.
+      if (onUpdateStudyData) {
+        onUpdateStudyData({
+          studyPlan: planResult,
+          spacedRepetition: repResult,
+          studySettings: { dailyHours },
+          completedDays: Array.from(completedDays),
+        });
+      }
     } catch (err) {
       setError(err.message);
     } finally {
@@ -117,13 +161,11 @@ export default function StudyPlan({
         is_root_gap: g.is_root_gap || false,
       }));
 
-      const [planResult, repResult] = await Promise.all([
-        generateStudyPlan(gapsPayload, currentMastery, careerWeights, dailyHours, totalDays),
-        generateSpacedRepetition(
-          gapsPayload.map(g => ({ id: g.id, name: g.name, mastery: currentMastery[g.id] || g.mastery || 0 })),
-          totalDays
-        ),
-      ]);
+      const planResult = await generateStudyPlan(gapsPayload, currentMastery, careerWeights, dailyHours);
+      const repResult = await generateSpacedRepetition(
+        gapsPayload.map(g => ({ id: g.id, name: g.name, mastery: currentMastery[g.id] || g.mastery || 0 })),
+        Math.max(7, planResult?.summary?.total_days || 7)
+      );
 
       setPlan(planResult);
       setRepetition(repResult);
@@ -131,6 +173,15 @@ export default function StudyPlan({
       setCheckedTopics(new Set());
       setCheckedReviews(new Set());
       setExpandedDay(1);
+
+      if (onUpdateStudyData) {
+        onUpdateStudyData({
+          studyPlan: planResult,
+          spacedRepetition: repResult,
+          studySettings: { dailyHours },
+          completedDays: [],
+        });
+      }
     } catch (err) {
       setError(err.message);
     } finally {
@@ -174,8 +225,11 @@ export default function StudyPlan({
     const day = plan.plan.find(d => d.day === dayNum);
     if (!day) return;
 
+    let nextStudyPlan = null;
+    let nextSpacedRepetition = null;
+
     // Build completed topics
-    const completedTopicsList = day.topics
+    const completedTopicsList = aggregateTopics(day.topics)
       .filter(t => checkedTopics.has(`${dayNum}-${t.topic_id}`))
       .map(t => ({
         topic_id: t.topic_id,
@@ -185,7 +239,7 @@ export default function StudyPlan({
       }));
 
     // Build completed reviews
-    const completedReviewsList = day.reviews
+    const completedReviewsList = aggregateReviews(day.reviews)
       .filter(r => checkedReviews.has(`${dayNum}-${r.topic_id}-r${r.review_number}`))
       .map(r => ({
         topic_id: r.topic_id,
@@ -210,7 +264,7 @@ export default function StudyPlan({
         is_root_gap: g.is_root_gap || false,
       }));
 
-      const remainingDays = totalDays - dayNum;
+      const remainingDays = Math.max(0, effectiveTotalDays - dayNum);
 
       const result = await completeDay({
         completed_topics: completedTopicsList,
@@ -242,7 +296,11 @@ export default function StudyPlan({
       }
 
       // Mark day as completed
-      setCompletedDays(prev => new Set([...prev, dayNum]));
+      const nextCompletedDays = new Set(completedDays);
+      nextCompletedDays.add(dayNum);
+      setCompletedDays(nextCompletedDays);
+
+      const totalDays = effectiveTotalDays;
 
       // Regenerate plan for remaining days if we got a new plan
       if (result.study_plan && result.study_plan.plan) {
@@ -271,7 +329,7 @@ export default function StudyPlan({
           });
         }
         const mergedPrioritized = result.study_plan.prioritized_topics || plan.prioritized_topics;
-        setPlan({
+        nextStudyPlan = {
           ...plan,
           plan: mergedPlan.sort((a, b) => a.day - b.day),
           prioritized_topics: mergedPrioritized,
@@ -281,7 +339,8 @@ export default function StudyPlan({
             total_days: totalDays,
             topics_remaining: result.study_plan.summary.topics_remaining,
           },
-        });
+        };
+        setPlan(nextStudyPlan);
       }
 
       // Career gap report: sync role skills from diagnosis.skill_readiness (same IDs as gap analysis)
@@ -305,13 +364,12 @@ export default function StudyPlan({
         }));
         if (gapsForRep.length > 0) {
           const repResult = await generateSpacedRepetition(gapsForRep, totalDays);
+          nextSpacedRepetition = repResult;
           setRepetition(repResult);
         }
       } catch {
         // optional; schedule tab may stay on prior run
       }
-
-      setUpdateCount(prev => prev + 1);
 
       // Propagate updated mastery and gaps back to parent so KnowledgeGraph stays in sync
       if (onUpdateStudyData) {
@@ -323,6 +381,10 @@ export default function StudyPlan({
                 ...result.diagnosis.other_gaps.map(g => ({ ...g, is_root_gap: false })),
               ]
             : currentGaps,
+          completedDays: Array.from(nextCompletedDays),
+          studyPlan: nextStudyPlan || plan,
+          spacedRepetition: nextSpacedRepetition || repetition,
+          studySettings: { dailyHours },
         });
       }
 
@@ -369,7 +431,7 @@ export default function StudyPlan({
   };
 
   // Total items for a day
-  const getDayItemCount = (day) => day.topics.length + day.reviews.length;
+  const getDayItemCount = (day) => aggregateTopics(day.topics).length + aggregateReviews(day.reviews).length;
 
   if (loading) {
     return (
@@ -394,8 +456,8 @@ export default function StudyPlan({
       <div className="study-plan-nav">
         <button className="back-btn" type="button" onClick={onBack}>← Back to Graph</button>
         {onViewGapReport && (
-          <button className="back-btn gap-report-link" type="button" onClick={onViewGapReport}>
-            📊 View updated gap report
+        <button className="back-btn gap-report-link" type="button" onClick={onViewGapReport}>
+            <UiIcon name="chart" size={14} className="icon-inline" /> View updated gap report
           </button>
         )}
       </div>
@@ -409,7 +471,7 @@ export default function StudyPlan({
       {masteryChanges && masteryChanges.length > 0 && (
         <div className="mastery-toast animate-fade-in-up" id="mastery-toast">
           <div className="mastery-toast-header">
-            <span className="mastery-toast-icon">🎯</span>
+            <span className="mastery-toast-icon"><UiIcon name="target" size={16} className="icon-inline" /></span>
             <span className="mastery-toast-title">Mastery Updated!</span>
             <button className="mastery-toast-close" onClick={() => setMasteryChanges(null)}>✕</button>
           </div>
@@ -456,24 +518,21 @@ export default function StudyPlan({
           <input type="number" min="1" max="12" value={dailyHours}
             onChange={(e) => setDailyHours(parseInt(e.target.value) || 4)} className="setting-input" />
         </div>
-        <div className="setting-group">
-          <label>Total days</label>
-          <input type="number" min="7" max="90" value={totalDays}
-            onChange={(e) => setTotalDays(parseInt(e.target.value) || 14)} className="setting-input" />
-        </div>
-        <button className="btn-small" onClick={handleRegenerate}>🔄 Regenerate</button>
+        <button className="btn-small" onClick={handleRegenerate}>
+          <UiIcon name="refresh" size={14} className="icon-inline" /> Regenerate
+        </button>
       </div>
 
       {/* Tabs */}
       <div className="tabs animate-fade-in">
         <button className={`tab ${activeTab === 'plan' ? 'active' : ''}`} onClick={() => setActiveTab('plan')}>
-          📅 Daily Schedule
+          <UiIcon name="calendar" size={14} className="icon-inline" /> Daily Schedule
         </button>
         <button className={`tab ${activeTab === 'topics' ? 'active' : ''}`} onClick={() => setActiveTab('topics')}>
-          📊 Priority Topics
+          <UiIcon name="chart" size={14} className="icon-inline" /> Priority Topics
         </button>
         <button className={`tab ${activeTab === 'repetition' ? 'active' : ''}`} onClick={() => setActiveTab('repetition')}>
-          🔁 Spaced Repetition
+          <UiIcon name="repeat" size={14} className="icon-inline" /> Spaced Repetition
         </button>
       </div>
 
@@ -533,10 +592,10 @@ export default function StudyPlan({
                 )}
 
                 {/* Study sessions */}
-                {day.topics.length > 0 && (
+                {aggregateTopics(day.topics).length > 0 && (
                   <div className="day-section">
-                    <h4>📖 Study Sessions</h4>
-                    {day.topics.map((topic, i) => {
+                    <h4><UiIcon name="book" size={14} className="icon-inline" /> Study Sessions</h4>
+                    {aggregateTopics(day.topics).map((topic, i) => {
                       const checkKey = `${day.day}-${topic.topic_id}`;
                       const isChecked = isDayDone || checkedTopics.has(checkKey);
                       const masteryVal = currentMastery[topic.topic_id];
@@ -574,7 +633,7 @@ export default function StudyPlan({
                                       toggleResourcesPanel(resourcesKey);
                                     }}
                                   >
-                                    🔗 Resources ({resources.length})
+                                    <UiIcon name="link" size={13} className="icon-inline" /> Resources ({resources.length})
                                   </button>
                                 </div>
                               </div>
@@ -596,7 +655,7 @@ export default function StudyPlan({
 
                               {resources.length === 0 ? (
                                 <p className="topic-resources-empty">
-                                  No curated resources for <span className="mono">{topic.topic_id}</span> yet.
+                                  No resources found for <span className="mono">{topic.topic_id}</span>.
                                 </p>
                               ) : (
                                 <div className="topic-resources-grid">
@@ -626,12 +685,15 @@ export default function StudyPlan({
                 )}
 
                 {/* Review sessions */}
-                {day.reviews.length > 0 && (
+                {aggregateReviews(day.reviews).length > 0 && (
                   <div className="day-section">
-                    <h4>🔁 Review Sessions</h4>
-                    {day.reviews.map((review, i) => {
+                    <h4><UiIcon name="repeat" size={14} className="icon-inline" /> Review Sessions</h4>
+                    {aggregateReviews(day.reviews).map((review, i) => {
                       const checkKey = `${day.day}-${review.topic_id}-r${review.review_number}`;
                       const isChecked = isDayDone || checkedReviews.has(checkKey);
+                      const resourcesKey = `${day.day}-review-${review.topic_id}-r${review.review_number}`;
+                      const isResourcesOpen = openResourcesFor.has(resourcesKey);
+                      const resources = getTopicResources(review.topic_id);
                       return (
                         <div key={i} className={`schedule-item review ${isChecked ? 'item-checked' : ''}`}>
                           <div className="schedule-item-left">
@@ -650,11 +712,56 @@ export default function StudyPlan({
                             <div>
                               <div className={`schedule-name ${isChecked ? 'name-checked' : ''}`}>{review.topic_name}</div>
                               <span className="skill-category-badge">Review #{review.review_number}</span>
+                              <div className="topic-resources-toggle">
+                                <button
+                                  type="button"
+                                  className="resources-toggle-btn"
+                                  onClick={(e) => {
+                                    e.stopPropagation();
+                                    toggleResourcesPanel(resourcesKey);
+                                  }}
+                                >
+                                  <UiIcon name="link" size={13} className="icon-inline" /> Resources ({resources.length})
+                                </button>
+                              </div>
                             </div>
                           </div>
                           <div className="schedule-item-right">
                             <span className="schedule-duration">{formatMinutes(review.minutes)}</span>
                           </div>
+
+                          {isResourcesOpen && (
+                            <div className="topic-resources-panel">
+                              <div className="topic-resources-header">
+                                <div className="topic-resources-title">Recommended resources</div>
+                                <div className="topic-resources-count">{resources.length} links</div>
+                              </div>
+
+                              {resources.length === 0 ? (
+                                <p className="topic-resources-empty">
+                                  No resources found for <span className="mono">{review.topic_id}</span>.
+                                </p>
+                              ) : (
+                                <div className="topic-resources-grid">
+                                  {resources.map((r, idx) => (
+                                    <a
+                                      key={`${review.topic_id}-${idx}`}
+                                      className="resource-card"
+                                      href={r.url}
+                                      target="_blank"
+                                      rel="noreferrer"
+                                    >
+                                      <div className="resource-card-top">
+                                        <span className="resource-kind">{guessResourceKind(r)}</span>
+                                        <span className="resource-domain">{getLinkDomain(r.url)}</span>
+                                      </div>
+                                      <div className="resource-title">{r.title}</div>
+                                    </a>
+                                  ))}
+                                </div>
+                              )}
+                            </div>
+                          )}
                         </div>
                       );
                     })}
@@ -677,7 +784,7 @@ export default function StudyPlan({
                         </>
                       ) : (
                         <>
-                          ✅ Complete Day {day.day}
+                          <UiIcon name="check" size={14} className="icon-inline" /> Complete Day {day.day}
                           {checkedCount > 0 && (
                             <span className="checked-count">{checkedCount}/{totalItems}</span>
                           )}
@@ -775,7 +882,7 @@ export default function StudyPlan({
       {/* Actions */}
       <div className="report-actions">
         <button className="btn-secondary" onClick={onStartOver}>
-          🔄 Start Over
+          <UiIcon name="refresh" size={14} className="icon-inline" /> Start Over
         </button>
       </div>
     </div>

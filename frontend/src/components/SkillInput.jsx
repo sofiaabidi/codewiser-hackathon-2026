@@ -1,5 +1,6 @@
 import { useState } from 'react';
 import { analyzeGap } from '../utils/api';
+import { RoleIcon } from './UiIcon';
 
 export default function SkillInput({ role, skills, onAnalyze, onBack }) {
   const [proficiencies, setProficiencies] = useState(() => {
@@ -71,7 +72,7 @@ export default function SkillInput({ role, skills, onAnalyze, onBack }) {
       </div>
 
       <div className="role-banner">
-        <div className="role-icon">{role.icon}</div>
+        <div className="role-icon"><RoleIcon roleId={role.id} size={22} /></div>
         <div className="role-banner-info">
           <h3>{role.title}</h3>
           <p>{skills.length} skills to evaluate</p>

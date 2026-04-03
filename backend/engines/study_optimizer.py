@@ -93,7 +93,7 @@ def topological_sort_gaps(gaps, concept_data):
     return sorted_order
 
 
-def generate_study_plan(gaps, mastery_scores, career_weights, daily_hours=4, total_days=14):
+def generate_study_plan(gaps, mastery_scores, career_weights, daily_hours=4, total_days=None):
     """
     Module 4: Generate a day-by-day study schedule.
 
@@ -109,7 +109,7 @@ def generate_study_plan(gaps, mastery_scores, career_weights, daily_hours=4, tot
         mastery_scores (dict): Current mastery for each concept
         career_weights (dict): Skill weights from career role
         daily_hours (int): Available study hours per day
-        total_days (int): Number of days to plan
+        total_days (int|None): Number of days to plan (optional; if None, computed)
 
     Returns:
         dict: Complete study plan with daily schedules
@@ -138,10 +138,39 @@ def generate_study_plan(gaps, mastery_scores, career_weights, daily_hours=4, tot
     # Step 4: Greedy bin-packing into days
     daily_minutes = daily_hours * 60
     schedule = []
-    review_queue = []  # (day_due, topic)
+    review_queue = []  # dicts: {day_due, topic_id, ...}
+
+    # Track remaining minutes per topic so "finish everything" is meaningful.
+    # required_minutes is scaled by (1 - mastery), capped to at least 30 minutes total.
+    remaining_by_id = {}
+    for t in ordered_topics:
+        required = int(t["estimated_hours"] * 60 * (1 - t["mastery"]))
+        remaining_by_id[t["id"]] = max(required, 30)
+
+    computed_days = total_days is None
+
+    def compute_min_days_to_finish():
+        if daily_minutes <= 0:
+            return 1
+        # Per-topic daily cap is 120 minutes (same as the scheduler), so a topic may span multiple days.
+        total_chunks = 0
+        for t in ordered_topics:
+            rem = remaining_by_id.get(t["id"], 0)
+            chunks = math.ceil(rem / 120) if rem > 0 else 0
+            total_chunks += max(chunks, 1) if rem > 0 else 0
+        # Worst-case: 30 minutes per chunk; but we can do better by simulating packing:
+        # Use total required minutes for a lower bound.
+        total_required = sum(remaining_by_id.values())
+        lower_bound = math.ceil(total_required / daily_minutes) if total_required > 0 else 1
+        # Add a small buffer for reviews within the same horizon.
+        return max(1, lower_bound)
+
+    if computed_days:
+        total_days = compute_min_days_to_finish()
 
     topic_idx = 0
-    for day in range(1, total_days + 1):
+    day = 1
+    while day <= total_days:
         day_plan = {
             "day": day,
             "topics": [],
@@ -181,11 +210,18 @@ def generate_study_plan(gaps, mastery_scores, career_weights, daily_hours=4, tot
                         "day_due": day + next_interval,
                     })
 
-        # Then: study new topics
+        # Then: study topics (may span multiple days)
         while topic_idx < len(ordered_topics) and remaining_minutes >= 30:
             topic = ordered_topics[topic_idx]
+            tid = topic["id"]
+            remaining_for_topic = remaining_by_id.get(tid, 0)
+
+            if remaining_for_topic <= 0:
+                topic_idx += 1
+                continue
+
             study_minutes = min(
-                int(topic["estimated_hours"] * 60 * (1 - topic["mastery"])),
+                remaining_for_topic,
                 remaining_minutes,
                 120  # max 2hr per topic per day
             )
@@ -206,25 +242,35 @@ def generate_study_plan(gaps, mastery_scores, career_weights, daily_hours=4, tot
             day_plan["total_study_minutes"] += study_minutes
             remaining_minutes -= study_minutes
 
-            # Schedule first review (spaced repetition)
-            interval = compute_review_interval(1, topic["mastery"])
-            if day + interval <= total_days:
-                review_queue.append({
-                    "topic_id": topic["id"],
-                    "topic_name": topic["name"],
-                    "review_number": 1,
-                    "retention": max(topic["mastery"], 0.3),
-                    "day_due": day + interval,
-                })
+            remaining_by_id[tid] = max(0, remaining_for_topic - study_minutes)
 
-            topic_idx += 1
+            # Schedule first review after first exposure (even if it spans days)
+            if remaining_for_topic == remaining_by_id[tid] + study_minutes:
+                interval = compute_review_interval(1, topic["mastery"])
+                if day + interval <= total_days:
+                    review_queue.append({
+                        "topic_id": tid,
+                        "topic_name": topic["name"],
+                        "review_number": 1,
+                        "retention": max(topic["mastery"], 0.3),
+                        "day_due": day + interval,
+                    })
+
+            if remaining_by_id[tid] <= 0:
+                topic_idx += 1
 
         schedule.append(day_plan)
+
+        # If we were asked to compute days, extend horizon until topics are finished.
+        if computed_days and topic_idx < len(ordered_topics) and day == total_days:
+            total_days += 1
+
+        day += 1
 
     # Summary statistics
     total_study = sum(d["total_study_minutes"] for d in schedule)
     total_review = sum(d["total_review_minutes"] for d in schedule)
-    topics_covered = topic_idx
+    topics_covered = sum(1 for tid, rem in remaining_by_id.items() if rem <= 0)
 
     return {
         "plan": schedule,

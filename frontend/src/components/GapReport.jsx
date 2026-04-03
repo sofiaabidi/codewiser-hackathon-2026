@@ -1,6 +1,7 @@
 import { useEffect, useState } from 'react';
+import UiIcon from './UiIcon';
 
-export default function GapReport({ report, onBack, onStartOver, onExploreGraph }) {
+export default function GapReport({ report, onBack, onStartOver, onExploreGraph, lockSkillEditing = false }) {
   const [gaugeOffset, setGaugeOffset] = useState(283);
 
   useEffect(() => {
@@ -25,16 +26,10 @@ export default function GapReport({ report, onBack, onStartOver, onExploreGraph 
     return 'var(--accent-red)';
   };
 
-  const getBarColor = (proficiency) => {
-    if (proficiency >= 0.6) return 'green';
-    if (proficiency > 0) return 'amber';
-    return 'red';
-  };
-
   return (
     <div className="gap-report">
       <button className="back-btn" onClick={onBack}>
-        ← Back to Skills
+        {lockSkillEditing ? '← Back to Graph' : '← Back to Skills'}
       </button>
 
       <div className="report-header">
@@ -217,7 +212,7 @@ export default function GapReport({ report, onBack, onStartOver, onExploreGraph 
       {/* Actions */}
       <div className="report-actions">
         <button className="btn-primary" id="next-module-btn" onClick={onExploreGraph}>
-          🧠 Explore Knowledge Graph →
+          <UiIcon name="graph" size={16} className="icon-inline" /> Explore Knowledge Graph →
         </button>
         <button className="btn-secondary" onClick={onStartOver} id="start-over-btn">
           Start Over

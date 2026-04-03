@@ -1,3 +1,5 @@
+import UiIcon from './UiIcon';
+
 export default function LandingPage({ onStart }) {
   return (
     <div className="landing">
@@ -23,17 +25,17 @@ export default function LandingPage({ onStart }) {
 
       <div className="landing-features">
         <div className="landing-feature">
-          <div className="feature-icon">🎯</div>
+          <div className="feature-icon"><UiIcon name="target" size={22} /></div>
           <h3>Skill Gap Analysis</h3>
           <p>Compare your skills against any career role and find what's missing</p>
         </div>
         <div className="landing-feature">
-          <div className="feature-icon">🧠</div>
+          <div className="feature-icon"><UiIcon name="graph" size={22} /></div>
           <h3>Knowledge Graph</h3>
           <p>Map prerequisite concepts and find your root knowledge gaps</p>
         </div>
         <div className="landing-feature">
-          <div className="feature-icon">📅</div>
+          <div className="feature-icon"><UiIcon name="calendar" size={22} /></div>
           <h3>Study Optimizer</h3>
           <p>Generate priority-based study plans with spaced repetition</p>
         </div>
