@@ -93,12 +93,15 @@ def auth_logout():
     return jsonify({"ok": True})
 
 
+from flask import url_for
+
 @app.route("/api/auth/login/github", methods=["GET"])
 def auth_login_github():
     if not _github_oauth_is_configured():
         return jsonify({"error": "GitHub OAuth not configured"}), 500
-    oauth_redirect_base_url = os.getenv("OAUTH_REDIRECT_BASE_URL", "http://localhost:5000").rstrip("/")
-    redirect_uri = f"{oauth_redirect_base_url}/api/auth/callback/github"
+
+    redirect_uri = url_for("auth_callback_github", _external=True)
+    
     return oauth.github.authorize_redirect(redirect_uri)
 
 
