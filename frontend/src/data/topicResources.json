@@ -1,0 +1,173 @@
+{
+  "machine_learning": [
+    {
+      "kind": "Course",
+      "title": "Google Developers Machine Learning Crash Course",
+      "url": "https://developers.google.com/machine-learning/crash-course"
+    },
+    {
+      "kind": "Video",
+      "title": "Introduction to Machine Learning (free) - StatQuest playlist",
+      "url": "https://www.youtube.com/@statquest"
+    },
+    {
+      "kind": "Guide",
+      "title": "Scikit-learn Tutorials (practical ML with Python)",
+      "url": "https://scikit-learn.org/stable/tutorial/index.html"
+    }
+  ],
+  "linear_algebra": [
+    {
+      "kind": "Website",
+      "title": "Khan Academy: Linear Algebra",
+      "url": "https://www.khanacademy.org/math/linear-algebra"
+    },
+    {
+      "kind": "Course",
+      "title": "MIT OCW 18.06SC: Linear Algebra",
+      "url": "https://ocw.mit.edu/courses/18-06sc-linear-algebra-spring-2011/"
+    }
+  ],
+  "matrices": [
+    {
+      "kind": "Website",
+      "title": "Khan Academy: Matrices",
+      "url": "https://www.khanacademy.org/math/linear-algebra/matrix-transformations"
+    },
+    {
+      "kind": "Guide",
+      "title": "MIT OCW Linear Algebra (Matrices section)",
+      "url": "https://ocw.mit.edu/courses/18-06sc-linear-algebra-spring-2011/pages/unit-i-matrices-and-gaussian-elimination/"
+    }
+  ],
+  "vectors": [
+    {
+      "kind": "Website",
+      "title": "Khan Academy: Vectors",
+      "url": "https://www.khanacademy.org/math/linear-algebra/vectors-in-spaces"
+    },
+    {
+      "kind": "Guide",
+      "title": "MIT OCW Linear Algebra (Vectors section)",
+      "url": "https://ocw.mit.edu/courses/18-06sc-linear-algebra-spring-2011/pages/unit-ii-vector-spaces/"
+    }
+  ],
+  "eigenvalues": [
+    {
+      "kind": "Website",
+      "title": "Khan Academy: Eigenvalues and eigenvectors",
+      "url": "https://www.khanacademy.org/math/linear-algebra/eigenvalues-and-eigenvectors"
+    },
+    {
+      "kind": "Guide",
+      "title": "MIT OCW Linear Algebra (Eigenvalues section)",
+      "url": "https://ocw.mit.edu/courses/18-06sc-linear-algebra-spring-2011/pages/unit-iv-eigenvalues-and-eigenvectors/"
+    }
+  ],
+  "probability": [
+    {
+      "kind": "Website",
+      "title": "Khan Academy: Probability",
+      "url": "https://www.khanacademy.org/math/statistics-probability"
+    },
+    {
+      "kind": "Guide",
+      "title": "MIT OpenCourseWare 18.05 (Probability & Random Variables - resources)",
+      "url": "https://ocw.mit.edu/courses/18-05-introduction-to-probability-and-statistics-spring-2014/"
+    }
+  ],
+  "basic_statistics": [
+    {
+      "kind": "Website",
+      "title": "Khan Academy: Statistics basics",
+      "url": "https://www.khanacademy.org/math/statistics-probability"
+    },
+    {
+      "kind": "Guide",
+      "title": "StatQuest (Statistics explanations)",
+      "url": "https://www.youtube.com/@statquest"
+    }
+  ],
+  "combinatorics": [
+    {
+      "kind": "Website",
+      "title": "Khan Academy: Combinatorics",
+      "url": "https://www.khanacademy.org/math/combinatorics-probability"
+    }
+  ],
+  "python_basics": [
+    {
+      "kind": "Course",
+      "title": "Python official tutorial (Beginner-friendly)",
+      "url": "https://docs.python.org/3/tutorial/"
+    },
+    {
+      "kind": "Guide",
+      "title": "Real Python: Python basics for beginners",
+      "url": "https://realpython.com/tutorials/python/"
+    }
+  ],
+  "python_libraries": [
+    {
+      "kind": "Guide",
+      "title": "TensorFlow tutorials (modeling basics)",
+      "url": "https://www.tensorflow.org/tutorials"
+    },
+    {
+      "kind": "Guide",
+      "title": "PyTorch tutorials (building blocks)",
+      "url": "https://pytorch.org/tutorials/"
+    },
+    {
+      "kind": "Guide",
+      "title": "Scikit-learn user guide",
+      "url": "https://scikit-learn.org/stable/user_guide.html"
+    }
+  ],
+  "numpy_pandas": [
+    {
+      "kind": "Website",
+      "title": "NumPy quickstart",
+      "url": "https://numpy.org/doc/stable/user/quickstart.html"
+    },
+    {
+      "kind": "Website",
+      "title": "Pandas User Guide",
+      "url": "https://pandas.pydata.org/pandas-docs/stable/user_guide/index.html"
+    }
+  ],
+  "sql": [
+    {
+      "kind": "Website",
+      "title": "SQLBolt (hands-on SQL lessons)",
+      "url": "https://sqlbolt.com/"
+    },
+    {
+      "kind": "Website",
+      "title": "Mode SQL Tutorial",
+      "url": "https://mode.com/sql-tutorial/"
+    }
+  ],
+  "sql_basics": [
+    {
+      "kind": "Website",
+      "title": "SQLBolt: SELECT queries",
+      "url": "https://sqlbolt.com/lesson/select_queries"
+    }
+  ],
+  "sql_joins": [
+    {
+      "kind": "Website",
+      "title": "Mode SQL Tutorial: Joins",
+      "url": "https://mode.com/sql-tutorial/sql-join/"
+    }
+  ],
+  "sql_aggregations": [
+    {
+      "kind": "Website",
+      "title": "SQL aggregations basics (GROUP BY)",
+      "url": "https://mode.com/sql-tutorial/sql-group-by/"
+    }
+  ]
+}
+

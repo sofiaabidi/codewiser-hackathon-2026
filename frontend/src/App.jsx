@@ -58,6 +58,10 @@ function App() {
     setStep(STEPS.STUDY_PLAN);
   };
 
+  const handleViewGapReportFromStudy = () => {
+    setStep(STEPS.GAP_REPORT);
+  };
+
   const handleUpdateStudyData = (updates) => {
     setStudyData(prev => prev ? { ...prev, ...updates } : prev);
   };
@@ -143,6 +147,7 @@ function App() {
             onStartOver={handleStartOver}
             onUpdateGapReport={setGapReport}
             onUpdateStudyData={handleUpdateStudyData}
+            onViewGapReport={handleViewGapReportFromStudy}
           />
         )}
       </main>

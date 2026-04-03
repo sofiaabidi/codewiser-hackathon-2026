@@ -1,9 +1,9 @@
-import { useState, useEffect, useRef } from 'react';
+import { useState, useEffect, useRef, useMemo, useCallback } from 'react';
 import { diagnoseGaps } from '../utils/api';
 
 export default function KnowledgeGraph({ gapReport, onStudyPlan, onBack, initialMastery }) {
   const [diagnosis, setDiagnosis] = useState(null);
-  const [masteryScores, setMasteryScores] = useState(initialMastery || {});
+  const [masteryScores, setMasteryScores] = useState(() => (initialMastery && Object.keys(initialMastery).length > 0 ? { ...initialMastery } : {}));
   const [loading, setLoading] = useState(true);
   const [showMasteryInput, setShowMasteryInput] = useState(false);
   const [error, setError] = useState(null);
@@ -15,34 +15,25 @@ export default function KnowledgeGraph({ gapReport, onStudyPlan, onBack, initial
   const [isPanning, setIsPanning] = useState(false);
   const panStart = useRef({ x: 0, y: 0, vx: 0, vy: 0 });
 
-  const skillIds = [
-    ...gapReport.skills.missing.map(s => s.id),
-    ...gapReport.skills.partial.map(s => s.id),
-  ];
+  const skillIds = useMemo(
+    () => [
+      ...gapReport.skills.missing.map(s => s.id),
+      ...gapReport.skills.partial.map(s => s.id),
+    ],
+    [gapReport]
+  );
 
-  useEffect(() => {
-    runDiagnosis(initialMastery || {});
-  }, []);
+  const skillIdsKey = useMemo(() => skillIds.slice().sort().join(','), [skillIds]);
 
-  const runDiagnosis = async (scores) => {
-    setLoading(true);
-    setError(null);
-    try {
-      const result = await diagnoseGaps(skillIds, scores);
-      setDiagnosis(result);
-      layoutGraph(result.graph);
-    } catch (err) {
-      setError(err.message);
-    } finally {
-      setLoading(false);
-    }
-  };
+  const masterySyncKey = useMemo(() => {
+    if (!initialMastery || Object.keys(initialMastery).length === 0) return '';
+    return JSON.stringify(initialMastery);
+  }, [initialMastery]);
 
-  const layoutGraph = (graph) => {
+  const layoutGraph = useCallback((graph) => {
     if (!graph) return;
     const { nodes, edges } = graph;
 
-    // Build adjacency for layer assignment
     const inDegree = {};
     const children = {};
     nodes.forEach(n => { inDegree[n.id] = 0; children[n.id] = []; });
@@ -51,7 +42,6 @@ export default function KnowledgeGraph({ gapReport, onStudyPlan, onBack, initial
       if (children[e.from]) children[e.from].push(e.to);
     });
 
-    // Assign layers via BFS (longest path)
     const layers = {};
     const queue = nodes.filter(n => inDegree[n.id] === 0).map(n => n.id);
     queue.forEach(id => { layers[id] = 0; });
@@ -71,7 +61,6 @@ export default function KnowledgeGraph({ gapReport, onStudyPlan, onBack, initial
 
     nodes.forEach(n => { if (layers[n.id] === undefined) layers[n.id] = 0; });
 
-    // Group by layer
     const layerGroups = {};
     nodes.forEach(n => {
       const layer = layers[n.id];
@@ -99,7 +88,34 @@ export default function KnowledgeGraph({ gapReport, onStudyPlan, onBack, initial
 
     setGraphData({ nodes: positionedNodes, edges });
     setViewBox({ x: 0, y: 0, w: graphW, h: graphH });
-  };
+  }, []);
+
+  const runDiagnosis = useCallback(async (scores) => {
+    if (!skillIds.length) {
+      setLoading(false);
+      setError('No target skills left to map — open the gap report to see your progress.');
+      setDiagnosis(null);
+      setGraphData({ nodes: [], edges: [] });
+      return;
+    }
+    setLoading(true);
+    setError(null);
+    try {
+      const result = await diagnoseGaps(skillIds, scores);
+      setDiagnosis(result);
+      layoutGraph(result.graph);
+    } catch (err) {
+      setError(err.message);
+    } finally {
+      setLoading(false);
+    }
+  }, [skillIds, layoutGraph]);
+
+  useEffect(() => {
+    const scores = masterySyncKey === '' ? {} : JSON.parse(masterySyncKey);
+    setMasteryScores(scores);
+    runDiagnosis(scores);
+  }, [skillIdsKey, masterySyncKey, runDiagnosis]);
 
   // — Drag node —
   const handleNodeMouseDown = (e, nodeId) => {

@@ -1,7 +1,17 @@
 import { useState, useEffect } from 'react';
 import { generateStudyPlan, generateSpacedRepetition, completeDay } from '../utils/api';
+import { recomputeGapReportAfterDiagnosis } from '../utils/gapReportSync';
+import topicResources from '../data/topicResources.json';
 
-export default function StudyPlan({ studyData, gapReport, onBack, onStartOver, onUpdateGapReport, onUpdateStudyData }) {
+export default function StudyPlan({
+  studyData,
+  gapReport,
+  onBack,
+  onStartOver,
+  onUpdateGapReport,
+  onUpdateStudyData,
+  onViewGapReport,
+}) {
   const [plan, setPlan] = useState(null);
   const [repetition, setRepetition] = useState(null);
   const [loading, setLoading] = useState(true);
@@ -20,6 +30,35 @@ export default function StudyPlan({ studyData, gapReport, onBack, onStartOver, o
   const [currentMastery, setCurrentMastery] = useState({});
   const [currentGaps, setCurrentGaps] = useState([]);
   const [updateCount, setUpdateCount] = useState(0);
+
+  const [openResourcesFor, setOpenResourcesFor] = useState(new Set());
+
+  const toggleResourcesPanel = (key) => {
+    setOpenResourcesFor(prev => {
+      const next = new Set(prev);
+      if (next.has(key)) next.delete(key);
+      else next.add(key);
+      return next;
+    });
+  };
+
+  const getTopicResources = (topicId) => topicResources?.[topicId] || [];
+
+  const getLinkDomain = (url) => {
+    try {
+      const u = new URL(url);
+      return u.hostname.replace(/^www\./, '');
+    } catch {
+      return url;
+    }
+  };
+
+  const guessResourceKind = (r) => {
+    if (r?.kind) return r.kind;
+    const url = (r?.url || '').toLowerCase();
+    if (url.includes('youtube.com') || url.includes('youtu.be')) return 'Video';
+    return 'Website';
+  };
 
   const { diagnosis, allGaps, masteryScores, careerWeights } = studyData;
 
@@ -231,38 +270,45 @@ export default function StudyPlan({ studyData, gapReport, onBack, onStartOver, o
             total_review_minutes: 0,
           });
         }
+        const mergedPrioritized = result.study_plan.prioritized_topics || plan.prioritized_topics;
         setPlan({
           ...plan,
-          plan: mergedPlan,
+          plan: mergedPlan.sort((a, b) => a.day - b.day),
+          prioritized_topics: mergedPrioritized,
           summary: {
             ...plan.summary,
+            ...result.study_plan.summary,
+            total_days: totalDays,
             topics_remaining: result.study_plan.summary.topics_remaining,
           },
         });
       }
 
-      // Update parent gap report state with fresh mastery data
+      // Career gap report: sync role skills from diagnosis.skill_readiness (same IDs as gap analysis)
       if (result.diagnosis && onUpdateGapReport && gapReport) {
-        const um = result.updated_mastery;
-        const recategorize = (skillList) => skillList.map(s => ({
-          ...s,
-          proficiency: um[s.id] !== undefined ? um[s.id] : s.proficiency,
+        const updatedReport = recomputeGapReportAfterDiagnosis(gapReport, result.diagnosis);
+        if (updatedReport) onUpdateGapReport(updatedReport);
+      }
+
+      // Refresh spaced repetition from current gaps + mastery (matches regenerated priorities)
+      try {
+        const baseGaps = result.diagnosis
+          ? [
+              ...result.diagnosis.root_gaps.map(g => ({ ...g, is_root_gap: true })),
+              ...result.diagnosis.other_gaps.map(g => ({ ...g, is_root_gap: false })),
+            ]
+          : gapsPayload;
+        const gapsForRep = baseGaps.map(g => ({
+          id: g.id,
+          name: g.name,
+          mastery: result.updated_mastery[g.id] ?? g.mastery ?? 0,
         }));
-        const updatedReport = {
-          ...gapReport,
-          skills: {
-            missing: recategorize(gapReport.skills.missing).filter(s => (um[s.id] ?? s.proficiency) < 0.1),
-            partial: recategorize([...gapReport.skills.missing, ...gapReport.skills.partial]).filter(s => {
-              const m = um[s.id] ?? s.proficiency;
-              return m >= 0.1 && m < 0.6;
-            }),
-            mastered: recategorize([...gapReport.skills.missing, ...gapReport.skills.partial, ...(gapReport.skills.mastered || [])]).filter(s => {
-              const m = um[s.id] ?? s.proficiency;
-              return m >= 0.6;
-            }),
-          },
-        };
-        onUpdateGapReport(updatedReport);
+        if (gapsForRep.length > 0) {
+          const repResult = await generateSpacedRepetition(gapsForRep, totalDays);
+          setRepetition(repResult);
+        }
+      } catch {
+        // optional; schedule tab may stay on prior run
       }
 
       setUpdateCount(prev => prev + 1);
@@ -345,11 +391,18 @@ export default function StudyPlan({ studyData, gapReport, onBack, onStartOver, o
 
   return (
     <div className="study-plan-page">
-      <button className="back-btn" onClick={onBack}>← Back to Graph</button>
+      <div className="study-plan-nav">
+        <button className="back-btn" type="button" onClick={onBack}>← Back to Graph</button>
+        {onViewGapReport && (
+          <button className="back-btn gap-report-link" type="button" onClick={onViewGapReport}>
+            📊 View updated gap report
+          </button>
+        )}
+      </div>
 
       <div className="section-header">
         <h2>Your Study Plan</h2>
-        <p>Priority-optimized with spaced repetition</p>
+        <p>Complete days to update mastery, refresh gaps, and regenerate the rest of your schedule. Open the gap report or knowledge graph anytime to see progress.</p>
       </div>
 
       {/* Mastery update toast */}
@@ -487,32 +540,85 @@ export default function StudyPlan({ studyData, gapReport, onBack, onStartOver, o
                       const checkKey = `${day.day}-${topic.topic_id}`;
                       const isChecked = isDayDone || checkedTopics.has(checkKey);
                       const masteryVal = currentMastery[topic.topic_id];
+
+                      const resourcesKey = `${day.day}-${topic.topic_id}`;
+                      const isResourcesOpen = openResourcesFor.has(resourcesKey);
+                      const resources = getTopicResources(topic.topic_id);
                       return (
-                        <div key={i} className={`schedule-item study ${isChecked ? 'item-checked' : ''}`}>
-                          <div className="schedule-item-left">
-                            {!isDayDone ? (
-                              <label className="completion-checkbox" onClick={(e) => e.stopPropagation()}>
-                                <input
-                                  type="checkbox"
-                                  checked={isChecked}
-                                  onChange={() => toggleTopic(day.day, topic.topic_id)}
-                                />
-                                <span className="checkmark" />
-                              </label>
-                            ) : (
-                              <span className="completed-check">✓</span>
-                            )}
-                            <div>
-                              <div className={`schedule-name ${isChecked ? 'name-checked' : ''}`}>{topic.topic_name}</div>
-                              <span className="skill-category-badge">{topic.category}</span>
+                        <div key={i} className="schedule-item-wrap">
+                          <div className={`schedule-item study ${isChecked ? 'item-checked' : ''}`}>
+                            <div className="schedule-item-left">
+                              {!isDayDone ? (
+                                <label className="completion-checkbox" onClick={(e) => e.stopPropagation()}>
+                                  <input
+                                    type="checkbox"
+                                    checked={isChecked}
+                                    onChange={() => toggleTopic(day.day, topic.topic_id)}
+                                  />
+                                  <span className="checkmark" />
+                                </label>
+                              ) : (
+                                <span className="completed-check">✓</span>
+                              )}
+                              <div>
+                                <div className={`schedule-name ${isChecked ? 'name-checked' : ''}`}>
+                                  {topic.topic_name}
+                                </div>
+                                <span className="skill-category-badge">{topic.category}</span>
+                                <div className="topic-resources-toggle">
+                                  <button
+                                    type="button"
+                                    className="resources-toggle-btn"
+                                    onClick={(e) => {
+                                      e.stopPropagation();
+                                      toggleResourcesPanel(resourcesKey);
+                                    }}
+                                  >
+                                    🔗 Resources ({resources.length})
+                                  </button>
+                                </div>
+                              </div>
+                            </div>
+                            <div className="schedule-item-right">
+                              <span className="schedule-duration">{formatMinutes(topic.minutes)}</span>
+                              {masteryVal !== undefined && (
+                                <span className="mastery-badge">{Math.round(masteryVal * 100)}%</span>
+                              )}
                             </div>
                           </div>
-                          <div className="schedule-item-right">
-                            <span className="schedule-duration">{formatMinutes(topic.minutes)}</span>
-                            {masteryVal !== undefined && (
-                              <span className="mastery-badge">{Math.round(masteryVal * 100)}%</span>
-                            )}
-                          </div>
+
+                          {isResourcesOpen && (
+                            <div className="topic-resources-panel">
+                              <div className="topic-resources-header">
+                                <div className="topic-resources-title">Recommended resources</div>
+                                <div className="topic-resources-count">{resources.length} links</div>
+                              </div>
+
+                              {resources.length === 0 ? (
+                                <p className="topic-resources-empty">
+                                  No curated resources for <span className="mono">{topic.topic_id}</span> yet.
+                                </p>
+                              ) : (
+                                <div className="topic-resources-grid">
+                                  {resources.map((r, idx) => (
+                                    <a
+                                      key={`${topic.topic_id}-${idx}`}
+                                      className="resource-card"
+                                      href={r.url}
+                                      target="_blank"
+                                      rel="noreferrer"
+                                    >
+                                      <div className="resource-card-top">
+                                        <span className="resource-kind">{guessResourceKind(r)}</span>
+                                        <span className="resource-domain">{getLinkDomain(r.url)}</span>
+                                      </div>
+                                      <div className="resource-title">{r.title}</div>
+                                    </a>
+                                  ))}
+                                </div>
+                              )}
+                            </div>
+                          )}
                         </div>
                       );
                     })}
