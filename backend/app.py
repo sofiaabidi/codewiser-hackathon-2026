@@ -38,13 +38,8 @@ from persistence import (
 
 init_db()
 
-# CORS: we need cookie-based auth for /api/sessions and /api/auth/*.
-DEFAULT_ORIGINS = ["http://localhost:5173", "http://localhost:3000"]
-frontend_origins = os.environ.get("FRONTEND_ORIGINS", "")
-allowed_origins = [o.strip() for o in frontend_origins.split(",") if o.strip()]
-if not allowed_origins:
-    allowed_origins = DEFAULT_ORIGINS
-
+# CORS: cookie-based auth across frontend/backend origins.
+allowed_origins = ["https://pathforge-mu.vercel.app"]
 frontend_base_url = os.environ.get("FRONTEND_BASE_URL", allowed_origins[0]).rstrip("/")
 
 app.secret_key = os.environ.get("FLASK_SECRET_KEY", "dev-change-me")
@@ -54,7 +49,13 @@ app.config.update(
     SESSION_COOKIE_SECURE=True,
 )
 
-CORS(app, origins=allowed_origins, supports_credentials=True)
+CORS(
+    app,
+    supports_credentials=True,
+    origins=[
+        "https://pathforge-mu.vercel.app"
+    ]
+)
 
 oauth = OAuth(app)
 
