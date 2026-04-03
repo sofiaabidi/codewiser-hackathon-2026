@@ -173,6 +173,9 @@ function App() {
   };
 
   const handleGoToStudyPlan = (data) => {
+    if (studyData?.studyPlan) {
+      return;
+    }
     setStudyData(data);
     setStep(STEPS.STUDY_PLAN);
   };
@@ -363,6 +366,7 @@ function App() {
             onStudyPlan={handleGoToStudyPlan}
             onBack={handleBack}
             initialMastery={studyData ? studyData.masteryScores : null}
+            hasStudyPlanGenerated={Boolean(studyData?.studyPlan)}
           />
         )}
         {step === STEPS.STUDY_PLAN && (

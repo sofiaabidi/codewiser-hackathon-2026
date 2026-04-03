@@ -13,6 +13,7 @@ load_dotenv()
 
 from flask import Flask, jsonify, request, redirect, session
 from flask_cors import CORS
+import math
 from authlib.integrations.flask_client import OAuth
 from engines.gap_analysis import get_all_roles, get_role_skills, analyze_gap
 from engines.knowledge_graph import get_concept_subgraph, diagnose_knowledge_gaps
@@ -59,23 +60,8 @@ CORS(app, origins=allowed_origins, supports_credentials=True)
 oauth = OAuth(app)
 
 
-def _oauth_is_configured(provider: str) -> bool:
-    if provider == "google":
-        return bool(os.environ.get("GOOGLE_CLIENT_ID")) and bool(os.environ.get("GOOGLE_CLIENT_SECRET"))
-    if provider == "github":
-        return bool(os.environ.get("GITHUB_CLIENT_ID")) and bool(os.environ.get("GITHUB_CLIENT_SECRET"))
-    return False
-
-
-oauth.register(
-    name="google",
-    client_id=os.environ.get("GOOGLE_CLIENT_ID", ""),
-    client_secret=os.environ.get("GOOGLE_CLIENT_SECRET", ""),
-    access_token_url="https://oauth2.googleapis.com/token",
-    authorize_url="https://accounts.google.com/o/oauth2/v2/auth",
-    api_base_url="https://openidconnect.googleapis.com/v1/",
-    client_kwargs={"scope": "openid email profile"},
-)
+def _github_oauth_is_configured() -> bool:
+    return bool(os.environ.get("GITHUB_CLIENT_ID")) and bool(os.environ.get("GITHUB_CLIENT_SECRET"))
 
 oauth.register(
     name="github",
@@ -108,40 +94,12 @@ def auth_logout():
     return jsonify({"ok": True})
 
 
-@app.route("/api/auth/login/google", methods=["GET"])
-def auth_login_google():
-    if not _oauth_is_configured("google"):
-        return jsonify({"error": "Google OAuth not configured"}), 500
-    redirect_uri = f"{oauth_redirect_base_url}/api/auth/callback/google"
-    return oauth.google.authorize_redirect(redirect_uri)
-
-
 @app.route("/api/auth/login/github", methods=["GET"])
 def auth_login_github():
-    if not _oauth_is_configured("github"):
+    if not _github_oauth_is_configured():
         return jsonify({"error": "GitHub OAuth not configured"}), 500
     redirect_uri = f"{oauth_redirect_base_url}/api/auth/callback/github"
     return oauth.github.authorize_redirect(redirect_uri)
-
-
-@app.route("/api/auth/callback/google", methods=["GET"])
-def auth_callback_google():
-    try:
-        oauth.google.authorize_access_token()
-        resp = oauth.google.get("userinfo")
-        user_info = resp.json()
-        provider_sub = str(user_info.get("sub") or "")
-        email = user_info.get("email")
-        name = user_info.get("name")
-        if not provider_sub:
-            return redirect(f"{frontend_base_url}/?auth=error")
-
-        user_id = f"google:{provider_sub}"
-        upsert_user(user_id, provider="google", email=email, name=name)
-        session["user_id"] = user_id
-        return redirect(f"{frontend_base_url}/?auth=success")
-    except Exception:
-        return redirect(f"{frontend_base_url}/?auth=error")
 
 
 @app.route("/api/auth/callback/github", methods=["GET"])
@@ -410,12 +368,28 @@ def complete_day():
     if skill_ids:
         diagnosis = diagnose_knowledge_gaps(skill_ids, updated_mastery)
 
-    # Step 4: Regenerate study plan for remaining days
+    # Step 4: Regenerate study plan for remaining days.
+    # If timeline is exhausted but gaps still remain, auto-extend the plan.
     new_plan = None
-    if still_gaps and remaining_days > 0:
+    auto_extended_days = 0
+    plan_days = remaining_days
+    if still_gaps and plan_days <= 0:
+        total_remaining_hours = 0.0
+        for g in still_gaps:
+            current = updated_mastery.get(g.get("id"), g.get("mastery", 0.0))
+            deficit = max(0.0, 1.0 - current)
+            total_remaining_hours += g.get("estimated_hours", 2) * deficit
+
+        # Heuristic: add enough days to cover remaining estimated work,
+        # minimum 2 days so optimizer can place study + reviews.
+        min_daily = max(float(daily_hours), 1.0)
+        auto_extended_days = max(2, int(math.ceil(total_remaining_hours / min_daily)))
+        plan_days = auto_extended_days
+
+    if still_gaps and plan_days > 0:
         new_plan = generate_study_plan(
             still_gaps, updated_mastery, career_weights,
-            daily_hours=daily_hours, total_days=remaining_days
+            daily_hours=daily_hours, total_days=plan_days
         )
 
     return jsonify({
@@ -425,6 +399,7 @@ def complete_day():
         "gaps_resolved": len(remaining_gaps) - len(still_gaps),
         "diagnosis": diagnosis,
         "study_plan": new_plan,
+        "auto_extended_days": auto_extended_days,
     })
 
 

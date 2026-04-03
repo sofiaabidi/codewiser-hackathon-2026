@@ -69,6 +69,14 @@ export function recomputeGapReportAfterDiagnosis(gapReport, diagnosis) {
     }
   });
 
+  // If diagnosis confirms there are no concept gaps left,
+  // treat role skills as fully achieved in the gap report UI.
+  if (diagnosis?.summary?.total_gaps === 0) {
+    byId.forEach((skill) => {
+      skill.proficiency = 1.0;
+    });
+  }
+
   const all = Array.from(byId.values());
 
   const missing = [];

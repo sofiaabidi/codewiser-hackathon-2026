@@ -2370,11 +2370,6 @@
   border-color: var(--border-medium);
 }
 
-.auth-btn-google {
-  background: linear-gradient(135deg, rgba(176, 228, 204, 0.16), rgba(176, 228, 204, 0.02));
-  color: #B0E4CC;
-}
-
 .auth-btn-github {
   background: linear-gradient(135deg, rgba(40, 90, 72, 0.25), rgba(176, 228, 204, 0.06));
   color: #B0E4CC;

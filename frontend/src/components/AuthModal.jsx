@@ -8,9 +8,6 @@ export default function AuthModal({ onClose }) {
         </p>
 
         <div className="auth-buttons">
-          <a className="auth-btn auth-btn-google" href="http://localhost:5000/api/auth/login/google">
-            Continue with Google
-          </a>
           <a className="auth-btn auth-btn-github" href="http://localhost:5000/api/auth/login/github">
             Continue with GitHub
           </a>

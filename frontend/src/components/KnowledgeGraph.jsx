@@ -2,7 +2,13 @@ import { useState, useEffect, useRef, useMemo, useCallback } from 'react';
 import { diagnoseGaps } from '../utils/api';
 import UiIcon from './UiIcon';
 
-export default function KnowledgeGraph({ gapReport, onStudyPlan, onBack, initialMastery }) {
+export default function KnowledgeGraph({
+  gapReport,
+  onStudyPlan,
+  onBack,
+  initialMastery,
+  hasStudyPlanGenerated = false,
+}) {
   const [diagnosis, setDiagnosis] = useState(null);
   const [masteryScores, setMasteryScores] = useState(() => (initialMastery && Object.keys(initialMastery).length > 0 ? { ...initialMastery } : {}));
   const [loading, setLoading] = useState(true);
@@ -25,6 +31,10 @@ export default function KnowledgeGraph({ gapReport, onStudyPlan, onBack, initial
   );
 
   const skillIdsKey = useMemo(() => skillIds.slice().sort().join(','), [skillIds]);
+  const roleCompleted = useMemo(
+    () => (gapReport?.summary?.missing || 0) === 0 && (gapReport?.summary?.partial || 0) === 0,
+    [gapReport]
+  );
 
   const masterySyncKey = useMemo(() => {
     if (!initialMastery || Object.keys(initialMastery).length === 0) return '';
@@ -214,7 +224,7 @@ export default function KnowledgeGraph({ gapReport, onStudyPlan, onBack, initial
   };
 
   const handleProceedToStudy = () => {
-    if (!diagnosis) return;
+    if (!diagnosis || hasStudyPlanGenerated) return;
 
     // Annotate each gap with is_root_gap flag
     const allGaps = [
@@ -252,6 +262,42 @@ export default function KnowledgeGraph({ gapReport, onStudyPlan, onBack, initial
   }
 
   if (error) {
+    if (roleCompleted) {
+      return (
+        <div className="knowledge-graph-page">
+          <button className="back-btn" onClick={onBack}>← Back to Report</button>
+
+          <div className="section-header">
+            <h2>Knowledge Dependency Graph</h2>
+            <p>Your role is complete.</p>
+          </div>
+
+          <div className="mastery-toast animate-fade-in-up">
+            <div className="mastery-toast-header">
+              <span className="mastery-toast-icon">🎉</span>
+              <span className="mastery-toast-title">Congratulations!</span>
+            </div>
+            <div className="mastery-toast-body">
+              <div className="mastery-change-item">
+                <span className="mastery-change-name">You completed this role.</span>
+                <span className="mastery-change-values">
+                  <span className="mastery-after">100%</span>
+                </span>
+              </div>
+              <div className="mastery-change-item">
+                <span className="mastery-change-name">All required concepts are covered and gap-free.</span>
+              </div>
+            </div>
+          </div>
+
+          <div className="report-actions">
+            <button className="btn-secondary" onClick={onBack}>
+              ← Back
+            </button>
+          </div>
+        </div>
+      );
+    }
     return (
       <div className="error-container">
         <h3>Error</h3>
@@ -547,8 +593,9 @@ export default function KnowledgeGraph({ gapReport, onStudyPlan, onBack, initial
 
       {/* Action */}
       <div className="report-actions">
-        <button className="btn-primary" onClick={handleProceedToStudy}>
-          <UiIcon name="calendar" size={16} className="icon-inline" /> Generate Study Plan →
+        <button className="btn-primary" onClick={handleProceedToStudy} disabled={hasStudyPlanGenerated}>
+          <UiIcon name="calendar" size={16} className="icon-inline" />
+          {hasStudyPlanGenerated ? ' Study Plan Already Generated' : ' Generate Study Plan →'}
         </button>
         <button className="btn-secondary" onClick={onBack}>
           ← Back

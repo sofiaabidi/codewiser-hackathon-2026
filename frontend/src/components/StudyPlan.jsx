@@ -49,6 +49,19 @@ export default function StudyPlan({
 
   const getTopicResources = (topicId) => topicResources?.[topicId] || [];
 
+  const computeAdaptiveTotalDays = (gapsPayload, masteryMap, hoursPerDay) => {
+    const safeHours = Math.max(1, Number(hoursPerDay) || 1);
+    const remainingHours = gapsPayload.reduce((sum, g) => {
+      const mastery = masteryMap[g.id] ?? g.mastery ?? 0;
+      const deficit = Math.max(0, 1 - mastery);
+      return sum + (g.estimated_hours || 1) * deficit;
+    }, 0);
+
+    // Add a small review/overhead buffer so plans are realistic.
+    const bufferedHours = remainingHours * 1.2;
+    return Math.max(1, Math.ceil(bufferedHours / safeHours));
+  };
+
   const aggregateTopics = (topics = []) => {
     const byId = new Map();
     topics.forEach((t) => {
@@ -122,10 +135,11 @@ export default function StudyPlan({
         is_root_gap: g.is_root_gap || false,
       }));
 
-      const planResult = await generateStudyPlan(gapsPayload, masteryScores, careerWeights, dailyHours);
+      const adaptiveDays = computeAdaptiveTotalDays(gapsPayload, masteryScores, dailyHours);
+      const planResult = await generateStudyPlan(gapsPayload, masteryScores, careerWeights, dailyHours, adaptiveDays);
       const repResult = await generateSpacedRepetition(
         gapsPayload.map(g => ({ id: g.id, name: g.name, mastery: g.mastery })),
-        Math.max(7, planResult?.summary?.total_days || 7)
+        Math.max(1, planResult?.summary?.total_days || adaptiveDays)
       );
 
       setPlan(planResult);
@@ -161,10 +175,11 @@ export default function StudyPlan({
         is_root_gap: g.is_root_gap || false,
       }));
 
-      const planResult = await generateStudyPlan(gapsPayload, currentMastery, careerWeights, dailyHours);
+      const adaptiveDays = computeAdaptiveTotalDays(gapsPayload, currentMastery, dailyHours);
+      const planResult = await generateStudyPlan(gapsPayload, currentMastery, careerWeights, dailyHours, adaptiveDays);
       const repResult = await generateSpacedRepetition(
         gapsPayload.map(g => ({ id: g.id, name: g.name, mastery: currentMastery[g.id] || g.mastery || 0 })),
-        Math.max(7, planResult?.summary?.total_days || 7)
+        Math.max(1, planResult?.summary?.total_days || adaptiveDays)
       );
 
       setPlan(planResult);
@@ -300,7 +315,7 @@ export default function StudyPlan({
       nextCompletedDays.add(dayNum);
       setCompletedDays(nextCompletedDays);
 
-      const totalDays = effectiveTotalDays;
+      const totalDays = effectiveTotalDays + (result.auto_extended_days || 0);
 
       // Regenerate plan for remaining days if we got a new plan
       if (result.study_plan && result.study_plan.plan) {
@@ -519,7 +534,7 @@ export default function StudyPlan({
             onChange={(e) => setDailyHours(parseInt(e.target.value) || 4)} className="setting-input" />
         </div>
         <button className="btn-small" onClick={handleRegenerate}>
-          <UiIcon name="refresh" size={14} className="icon-inline" /> Regenerate
+          <UiIcon name="refresh" size={14} className="icon-inline" /> Recalculate Plan
         </button>
       </div>
 
