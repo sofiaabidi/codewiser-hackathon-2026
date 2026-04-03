@@ -50,16 +50,16 @@ export default function GapReport({ report, onBack, onStartOver, onExploreGraph 
           <svg className="gauge-svg" viewBox="0 0 100 100">
             <defs>
               <linearGradient id="gaugeGradientGreen" x1="0%" y1="0%" x2="100%" y2="100%">
-                <stop offset="0%" stopColor="#00e676" />
-                <stop offset="100%" stopColor="#18ffff" />
+                <stop offset="0%" stopColor="#408A71" />
+                <stop offset="100%" stopColor="#B0E4CC" />
               </linearGradient>
               <linearGradient id="gaugeGradientAmber" x1="0%" y1="0%" x2="100%" y2="100%">
-                <stop offset="0%" stopColor="#ffab00" />
-                <stop offset="100%" stopColor="#ff6e40" />
+                <stop offset="0%" stopColor="#c4d48a" />
+                <stop offset="100%" stopColor="#c0a060" />
               </linearGradient>
               <linearGradient id="gaugeGradientRed" x1="0%" y1="0%" x2="100%" y2="100%">
-                <stop offset="0%" stopColor="#ff5252" />
-                <stop offset="100%" stopColor="#e040fb" />
+                <stop offset="0%" stopColor="#d46b6b" />
+                <stop offset="100%" stopColor="#b07ea8" />
               </linearGradient>
             </defs>
             <circle className="gauge-bg" cx="50" cy="50" r="45" />

@@ -180,15 +180,15 @@ export default function KnowledgeGraph({ gapReport, onStudyPlan, onBack }) {
 
   // Get node color
   const getNodeColor = (node) => {
-    if (node.mastery >= 0.6) return '#00e676';
-    if (node.mastery > 0) return '#ffab00';
-    if (node.is_root_gap) return '#ff5252';
-    return '#5a6580';
+    if (node.mastery >= 0.6) return '#B0E4CC';
+    if (node.mastery > 0) return '#408A71';
+    if (node.is_root_gap) return '#d46b6b';
+    return '#285A48';
   };
 
   const getNodeGlow = (node) => {
-    if (node.is_root_gap) return 'drop-shadow(0 0 8px rgba(255,82,82,0.6))';
-    if (node.mastery >= 0.6) return 'drop-shadow(0 0 6px rgba(0,230,118,0.4))';
+    if (node.is_root_gap) return 'none';
+    if (node.mastery >= 0.6) return 'none';
     return 'none';
   };
 
@@ -265,10 +265,10 @@ export default function KnowledgeGraph({ gapReport, onStudyPlan, onBack }) {
       <div className="graph-container animate-fade-in">
         <div className="graph-toolbar">
           <span className="graph-legend">
-            <span className="legend-item"><span className="legend-dot" style={{ background: '#00e676' }} /> Mastered</span>
-            <span className="legend-item"><span className="legend-dot" style={{ background: '#ffab00' }} /> Partial</span>
-            <span className="legend-item"><span className="legend-dot" style={{ background: '#ff5252' }} /> Root Gap</span>
-            <span className="legend-item"><span className="legend-dot" style={{ background: '#5a6580' }} /> Unknown</span>
+            <span className="legend-item"><span className="legend-dot" style={{ background: '#B0E4CC' }} /> Mastered</span>
+            <span className="legend-item"><span className="legend-dot" style={{ background: '#408A71' }} /> Partial</span>
+            <span className="legend-item"><span className="legend-dot" style={{ background: '#d46b6b' }} /> Root Gap</span>
+            <span className="legend-item"><span className="legend-dot" style={{ background: '#285A48' }} /> Unknown</span>
           </span>
           <button className="btn-small" onClick={() => setShowMasteryInput(!showMasteryInput)}>
             {showMasteryInput ? '✕ Close' : '✏️ Set Mastery'}
@@ -287,17 +287,17 @@ export default function KnowledgeGraph({ gapReport, onStudyPlan, onBack }) {
         >
           <defs>
             <marker id="arrowhead" markerWidth="10" markerHeight="7" refX="9" refY="3.5" orient="auto">
-              <polygon points="0 0, 10 3.5, 0 7" fill="rgba(79,140,255,0.5)" />
+              <polygon points="0 0, 10 3.5, 0 7" fill="rgba(64,138,113,0.4)" />
             </marker>
             <filter id="glow-red">
               <feGaussianBlur stdDeviation="4" result="blur" />
-              <feFlood floodColor="#ff5252" floodOpacity="0.5" />
+              <feFlood floodColor="#d46b6b" floodOpacity="0.3" />
               <feComposite in2="blur" operator="in" />
               <feMerge><feMergeNode /><feMergeNode in="SourceGraphic" /></feMerge>
             </filter>
             <filter id="glow-green">
               <feGaussianBlur stdDeviation="3" result="blur" />
-              <feFlood floodColor="#00e676" floodOpacity="0.4" />
+              <feFlood floodColor="#B0E4CC" floodOpacity="0.25" />
               <feComposite in2="blur" operator="in" />
               <feMerge><feMergeNode /><feMergeNode in="SourceGraphic" /></feMerge>
             </filter>
@@ -323,7 +323,7 @@ export default function KnowledgeGraph({ gapReport, onStudyPlan, onBack }) {
                 key={`edge-${i}`}
                 x1={fromX} y1={fromY}
                 x2={toX} y2={toY}
-                stroke="rgba(79,140,255,0.2)"
+                stroke="rgba(64,138,113,0.2)"
                 strokeWidth="1.5"
                 markerEnd="url(#arrowhead)"
                 className="graph-edge"
@@ -351,7 +351,7 @@ export default function KnowledgeGraph({ gapReport, onStudyPlan, onBack }) {
                 {node.is_root_gap && (
                   <circle
                     cx={node.x} cy={node.y} r={node.radius + 10}
-                    fill="none" stroke="#ff5252" strokeWidth="2"
+                    fill="none" stroke="#d46b6b" strokeWidth="1.5"
                     opacity="0.3"
                     className="pulse-ring"
                   />
@@ -379,7 +379,7 @@ export default function KnowledgeGraph({ gapReport, onStudyPlan, onBack }) {
                   return (
                     <path
                       d={`M ${x1} ${y1} A ${arcR} ${arcR} 0 ${large} 1 ${x2} ${y2}`}
-                      fill="none" stroke="#00e676" strokeWidth="2.5" strokeLinecap="round"
+                      fill="none" stroke="#B0E4CC" strokeWidth="2" strokeLinecap="round"
                     />
                   );
                 })()}
@@ -391,7 +391,7 @@ export default function KnowledgeGraph({ gapReport, onStudyPlan, onBack }) {
                   className="node-label"
                   fontSize={isHovered ? '12' : '10'}
                   fontWeight={isHovered ? '600' : '400'}
-                  fill="#c8d0e0"
+                  fill="rgba(176,228,204,0.5)"
                 >
                   {node.name.length > 20 ? node.name.slice(0, 18) + '…' : node.name}
                 </text>
@@ -406,20 +406,20 @@ export default function KnowledgeGraph({ gapReport, onStudyPlan, onBack }) {
                 x={tooltipNode.x + tooltipNode.radius + 10}
                 y={tooltipNode.y - 45}
                 width="170" height="80" rx="6"
-                fill="rgba(10,14,30,0.95)"
-                stroke="rgba(79,140,255,0.3)"
+                fill="rgba(9,20,19,0.95)"
+                stroke="rgba(64,138,113,0.25)"
                 strokeWidth="1"
               />
-              <text x={tooltipNode.x + tooltipNode.radius + 18} y={tooltipNode.y - 27} fill="#e8ecf4" fontSize="12" fontWeight="700">
+              <text x={tooltipNode.x + tooltipNode.radius + 18} y={tooltipNode.y - 27} fill="#B0E4CC" fontSize="12" fontWeight="700">
                 {tooltipNode.name}
               </text>
-              <text x={tooltipNode.x + tooltipNode.radius + 18} y={tooltipNode.y - 12} fill="#4f8cff" fontSize="9" fontWeight="600" textTransform="uppercase">
+              <text x={tooltipNode.x + tooltipNode.radius + 18} y={tooltipNode.y - 12} fill="#408A71" fontSize="9" fontWeight="600" textTransform="uppercase">
                 {tooltipNode.category}
               </text>
-              <text x={tooltipNode.x + tooltipNode.radius + 18} y={tooltipNode.y + 4} fill="#a0aec0" fontSize="10">
+              <text x={tooltipNode.x + tooltipNode.radius + 18} y={tooltipNode.y + 4} fill="rgba(176,228,204,0.5)" fontSize="10">
                 Mastery: {Math.round((tooltipNode.mastery || 0) * 100)}%  ·  Diff: {Math.round(tooltipNode.difficulty * 100)}%
               </text>
-              <text x={tooltipNode.x + tooltipNode.radius + 18} y={tooltipNode.y + 20} fill="#a0aec0" fontSize="10">
+              <text x={tooltipNode.x + tooltipNode.radius + 18} y={tooltipNode.y + 20} fill="rgba(176,228,204,0.5)" fontSize="10">
                 Est. {tooltipNode.estimated_hours}h study time
               </text>
             </g>

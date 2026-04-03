@@ -68,3 +68,13 @@ export async function generateSpacedRepetition(topics, totalDays = 30) {
   if (!res.ok) throw new Error('Failed to generate spaced repetition');
   return res.json();
 }
+
+export async function completeDay(payload) {
+  const res = await fetch(`${API_BASE}/complete-day`, {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify(payload),
+  });
+  if (!res.ok) throw new Error('Failed to complete day');
+  return res.json();
+}

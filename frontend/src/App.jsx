@@ -133,8 +133,10 @@ function App() {
         {step === STEPS.STUDY_PLAN && (
           <StudyPlan
             studyData={studyData}
+            gapReport={gapReport}
             onBack={handleBack}
             onStartOver={handleStartOver}
+            onUpdateGapReport={setGapReport}
           />
         )}
       </main>
