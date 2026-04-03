@@ -14,6 +14,7 @@ from engines.study_optimizer import (
     get_spaced_repetition_schedule,
     compute_priorities,
 )
+from engines.mastery_update import compute_mastery_updates, filter_remaining_gaps
 
 app = Flask(__name__)
 CORS(app)
@@ -151,6 +152,69 @@ def spaced_repetition():
 
     result = get_spaced_repetition_schedule(topics, total_days=total_days)
     return jsonify(result)
+
+
+# ─── Module 6: Iterative Learning Update ─────────────────────────
+
+@app.route("/api/complete-day", methods=["POST"])
+def complete_day():
+    """
+    Atomically: update mastery → re-diagnose gaps → regenerate study plan.
+    Body: {
+        "completed_topics": [{"topic_id", "topic_name", "minutes_spent", "expected_minutes"}],
+        "completed_reviews": [{"topic_id", "topic_name", "review_number"}],
+        "current_mastery": { concept_id: 0.0-1.0, ... },
+        "skill_ids": ["machine_learning", ...],
+        "career_weights": { skill_id: weight, ... },
+        "remaining_gaps": [{ gap concept dicts }],
+        "daily_hours": 4,
+        "remaining_days": 10
+    }
+    """
+    data = request.get_json()
+    if not data:
+        return jsonify({"error": "Request body must be JSON"}), 400
+
+    completed_topics = data.get("completed_topics", [])
+    completed_reviews = data.get("completed_reviews", [])
+    current_mastery = data.get("current_mastery", {})
+    skill_ids = data.get("skill_ids", [])
+    career_weights = data.get("career_weights", {})
+    remaining_gaps = data.get("remaining_gaps", [])
+    daily_hours = data.get("daily_hours", 4)
+    remaining_days = data.get("remaining_days", 10)
+
+    # Step 1: Update mastery scores deterministically
+    mastery_result = compute_mastery_updates(
+        completed_topics, completed_reviews, current_mastery
+    )
+    updated_mastery = mastery_result["updated_mastery"]
+    mastery_changes = mastery_result["changes"]
+
+    # Step 2: Filter out now-mastered gaps
+    still_gaps = filter_remaining_gaps(remaining_gaps, updated_mastery)
+
+    # Step 3: Re-run knowledge gap diagnosis with new mastery
+    diagnosis = None
+    if skill_ids:
+        diagnosis = diagnose_knowledge_gaps(skill_ids, updated_mastery)
+
+    # Step 4: Regenerate study plan for remaining days
+    new_plan = None
+    if still_gaps and remaining_days > 0:
+        new_plan = generate_study_plan(
+            still_gaps, updated_mastery, career_weights,
+            daily_hours=daily_hours, total_days=remaining_days
+        )
+
+    return jsonify({
+        "updated_mastery": updated_mastery,
+        "mastery_changes": mastery_changes,
+        "gaps_remaining": len(still_gaps),
+        "gaps_resolved": len(remaining_gaps) - len(still_gaps),
+        "diagnosis": diagnosis,
+        "study_plan": new_plan,
+    })
 
 
 if __name__ == "__main__":
