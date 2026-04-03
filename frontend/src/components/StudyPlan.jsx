@@ -1,7 +1,7 @@
 import { useState, useEffect } from 'react';
 import { generateStudyPlan, generateSpacedRepetition, completeDay } from '../utils/api';
 
-export default function StudyPlan({ studyData, gapReport, onBack, onStartOver, onUpdateGapReport }) {
+export default function StudyPlan({ studyData, gapReport, onBack, onStartOver, onUpdateGapReport, onUpdateStudyData }) {
   const [plan, setPlan] = useState(null);
   const [repetition, setRepetition] = useState(null);
   const [loading, setLoading] = useState(true);
@@ -192,9 +192,13 @@ export default function StudyPlan({ studyData, gapReport, onBack, onStartOver, o
         setMasteryChanges(result.mastery_changes);
       }
 
-      // Update remaining gaps
+      // Update remaining gaps — annotate with is_root_gap flag
       if (result.diagnosis) {
-        const newGaps = [...result.diagnosis.root_gaps, ...result.diagnosis.other_gaps];
+        const rootGapIds = new Set(result.diagnosis.root_gaps.map(g => g.id));
+        const newGaps = [
+          ...result.diagnosis.root_gaps.map(g => ({ ...g, is_root_gap: true })),
+          ...result.diagnosis.other_gaps.map(g => ({ ...g, is_root_gap: rootGapIds.has(g.id) })),
+        ];
         setCurrentGaps(newGaps);
       }
 
@@ -216,8 +220,9 @@ export default function StudyPlan({ studyData, gapReport, onBack, onStartOver, o
             mergedPlan.push(nd);
           }
         }
-        // Fill any empty days
-        for (let d = mergedPlan.length + 1; d <= totalDays; d++) {
+        // Fill any empty days — use actual max day number, not array length
+        const maxDayInPlan = mergedPlan.reduce((max, d) => Math.max(max, d.day), 0);
+        for (let d = maxDayInPlan + 1; d <= totalDays; d++) {
           mergedPlan.push({
             day: d,
             topics: [],
@@ -236,14 +241,44 @@ export default function StudyPlan({ studyData, gapReport, onBack, onStartOver, o
         });
       }
 
-      // Update parent gap report state
+      // Update parent gap report state with fresh mastery data
       if (result.diagnosis && onUpdateGapReport && gapReport) {
-        // Recompute a lightweight update
-        const updatedReport = { ...gapReport };
+        const um = result.updated_mastery;
+        const recategorize = (skillList) => skillList.map(s => ({
+          ...s,
+          proficiency: um[s.id] !== undefined ? um[s.id] : s.proficiency,
+        }));
+        const updatedReport = {
+          ...gapReport,
+          skills: {
+            missing: recategorize(gapReport.skills.missing).filter(s => (um[s.id] ?? s.proficiency) < 0.1),
+            partial: recategorize([...gapReport.skills.missing, ...gapReport.skills.partial]).filter(s => {
+              const m = um[s.id] ?? s.proficiency;
+              return m >= 0.1 && m < 0.6;
+            }),
+            mastered: recategorize([...gapReport.skills.missing, ...gapReport.skills.partial, ...(gapReport.skills.mastered || [])]).filter(s => {
+              const m = um[s.id] ?? s.proficiency;
+              return m >= 0.6;
+            }),
+          },
+        };
         onUpdateGapReport(updatedReport);
       }
 
       setUpdateCount(prev => prev + 1);
+
+      // Propagate updated mastery and gaps back to parent so KnowledgeGraph stays in sync
+      if (onUpdateStudyData) {
+        onUpdateStudyData({
+          masteryScores: result.updated_mastery,
+          allGaps: result.diagnosis
+            ? [
+                ...result.diagnosis.root_gaps.map(g => ({ ...g, is_root_gap: true })),
+                ...result.diagnosis.other_gaps.map(g => ({ ...g, is_root_gap: false })),
+              ]
+            : currentGaps,
+        });
+      }
 
       // Auto-advance to next day
       const nextDay = dayNum + 1;

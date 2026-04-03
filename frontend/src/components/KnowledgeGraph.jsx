@@ -1,9 +1,9 @@
 import { useState, useEffect, useRef } from 'react';
 import { diagnoseGaps } from '../utils/api';
 
-export default function KnowledgeGraph({ gapReport, onStudyPlan, onBack }) {
+export default function KnowledgeGraph({ gapReport, onStudyPlan, onBack, initialMastery }) {
   const [diagnosis, setDiagnosis] = useState(null);
-  const [masteryScores, setMasteryScores] = useState({});
+  const [masteryScores, setMasteryScores] = useState(initialMastery || {});
   const [loading, setLoading] = useState(true);
   const [showMasteryInput, setShowMasteryInput] = useState(false);
   const [error, setError] = useState(null);
@@ -21,7 +21,7 @@ export default function KnowledgeGraph({ gapReport, onStudyPlan, onBack }) {
   ];
 
   useEffect(() => {
-    runDiagnosis({});
+    runDiagnosis(initialMastery || {});
   }, []);
 
   const runDiagnosis = async (scores) => {
@@ -204,13 +204,35 @@ export default function KnowledgeGraph({ gapReport, onStudyPlan, onBack }) {
 
   const handleProceedToStudy = () => {
     if (!diagnosis) return;
-    const allGaps = [...diagnosis.root_gaps, ...diagnosis.other_gaps];
+
+    // Build a set of root gap IDs for fast lookup
+    const rootGapIds = new Set(diagnosis.root_gaps.map(g => g.id));
+
+    // Annotate each gap with is_root_gap flag
+    const allGaps = [
+      ...diagnosis.root_gaps.map(g => ({ ...g, is_root_gap: true })),
+      ...diagnosis.other_gaps.map(g => ({ ...g, is_root_gap: false })),
+    ];
+
+    // Build full mastery map from ALL graph nodes, then overlay user-entered scores
+    const fullMastery = {};
+    if (diagnosis.graph && diagnosis.graph.nodes) {
+      diagnosis.graph.nodes.forEach(node => {
+        fullMastery[node.id] = node.mastery || 0;
+      });
+    }
+    // User-entered scores override graph defaults
+    Object.entries(masteryScores).forEach(([id, val]) => {
+      fullMastery[id] = val;
+    });
+
     const careerWeights = {};
     [...gapReport.skills.missing, ...gapReport.skills.partial, ...gapReport.skills.mastered].forEach(s => {
       careerWeights[s.id] = s.weight;
     });
-    onStudyPlan({ diagnosis, allGaps, masteryScores, careerWeights });
+    onStudyPlan({ diagnosis, allGaps, masteryScores: fullMastery, careerWeights });
   };
+
 
   if (loading) {
     return (

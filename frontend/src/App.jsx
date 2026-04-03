@@ -58,6 +58,10 @@ function App() {
     setStep(STEPS.STUDY_PLAN);
   };
 
+  const handleUpdateStudyData = (updates) => {
+    setStudyData(prev => prev ? { ...prev, ...updates } : prev);
+  };
+
   const handleBack = () => {
     if (step === STEPS.SELECT_ROLE) setStep(STEPS.LANDING);
     else if (step === STEPS.INPUT_SKILLS) setStep(STEPS.SELECT_ROLE);
@@ -128,6 +132,7 @@ function App() {
             gapReport={gapReport}
             onStudyPlan={handleGoToStudyPlan}
             onBack={handleBack}
+            initialMastery={studyData ? studyData.masteryScores : null}
           />
         )}
         {step === STEPS.STUDY_PLAN && (
@@ -137,6 +142,7 @@ function App() {
             onBack={handleBack}
             onStartOver={handleStartOver}
             onUpdateGapReport={setGapReport}
+            onUpdateStudyData={handleUpdateStudyData}
           />
         )}
       </main>
