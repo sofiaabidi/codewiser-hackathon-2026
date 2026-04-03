@@ -46,7 +46,6 @@ if not allowed_origins:
     allowed_origins = DEFAULT_ORIGINS
 
 frontend_base_url = os.environ.get("FRONTEND_BASE_URL", allowed_origins[0]).rstrip("/")
-oauth_redirect_base_url = os.environ.get("OAUTH_REDIRECT_BASE_URL", "http://localhost:5000").rstrip("/")
 
 app.secret_key = os.environ.get("FLASK_SECRET_KEY", "dev-change-me")
 app.config.update(
@@ -98,6 +97,7 @@ def auth_logout():
 def auth_login_github():
     if not _github_oauth_is_configured():
         return jsonify({"error": "GitHub OAuth not configured"}), 500
+    oauth_redirect_base_url = os.getenv("OAUTH_REDIRECT_BASE_URL", "http://localhost:5000").rstrip("/")
     redirect_uri = f"{oauth_redirect_base_url}/api/auth/callback/github"
     return oauth.github.authorize_redirect(redirect_uri)
 
