@@ -1,4 +1,8 @@
+import { getApiBase } from '../utils/apiConfig';
+
 export default function AuthModal({ onClose }) {
+  const githubLoginUrl = `${getApiBase()}/auth/login/github`;
+
   return (
     <div className="auth-modal-overlay" role="dialog" aria-modal="true">
       <div className="auth-modal">
@@ -8,7 +12,7 @@ export default function AuthModal({ onClose }) {
         </p>
 
         <div className="auth-buttons">
-          <a className="auth-btn auth-btn-github" href="http://localhost:5000/api/auth/login/github">
+          <a className="auth-btn auth-btn-github" href={githubLoginUrl}>
             Continue with GitHub
           </a>
         </div>

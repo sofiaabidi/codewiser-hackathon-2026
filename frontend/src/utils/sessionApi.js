@@ -1,4 +1,6 @@
-const API_BASE = 'http://localhost:5000/api';
+import { getApiBase } from './apiConfig';
+
+const API_BASE = getApiBase();
 
 export async function authMe() {
   const res = await fetch(`${API_BASE}/auth/me`, {

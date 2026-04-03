@@ -31,10 +31,17 @@ export default function KnowledgeGraph({
   );
 
   const skillIdsKey = useMemo(() => skillIds.slice().sort().join(','), [skillIds]);
-  const roleCompleted = useMemo(
-    () => (gapReport?.summary?.missing || 0) === 0 && (gapReport?.summary?.partial || 0) === 0,
-    [gapReport]
-  );
+  const roleCompleted = useMemo(() => {
+    if (!gapReport || !gapReport.skills) return false;
+    const allSkills = [
+      ...(gapReport.skills.missing || []),
+      ...(gapReport.skills.partial || []),
+      ...(gapReport.skills.mastered || []),
+    ];
+    if (allSkills.length === 0) return false;
+    // Only show "completed" when every required role skill is at 100% proficiency.
+    return allSkills.every((s) => (s.proficiency ?? 0) >= 0.999);
+  }, [gapReport]);
 
   const masterySyncKey = useMemo(() => {
     if (!initialMastery || Object.keys(initialMastery).length === 0) return '';

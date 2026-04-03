@@ -229,9 +229,12 @@ export default function StudyPlan({
   // Get skill_ids from gap report
   const getSkillIds = () => {
     if (!gapReport) return [];
+    // Include ALL role skills so `diagnosis.skill_readiness` refreshes across the full
+    // weighted career-fit calculation (missing/partial/mastered).
     return [
-      ...gapReport.skills.missing.map(s => s.id),
-      ...gapReport.skills.partial.map(s => s.id),
+      ...(gapReport.skills.missing || []).map(s => s.id),
+      ...(gapReport.skills.partial || []).map(s => s.id),
+      ...(gapReport.skills.mastered || []).map(s => s.id),
     ];
   };
 
@@ -358,9 +361,42 @@ export default function StudyPlan({
         setPlan(nextStudyPlan);
       }
 
-      // Career gap report: sync role skills from diagnosis.skill_readiness (same IDs as gap analysis)
-      if (result.diagnosis && onUpdateGapReport && gapReport) {
-        const updatedReport = recomputeGapReportAfterDiagnosis(gapReport, result.diagnosis);
+      // Career gap report: recompute each day so career fit + stats change with progress.
+      // Prefer backend `diagnosis.skill_readiness` (prereq-based readiness), but fall back to
+      // updated mastery or existing proficiency if readiness isn't available for a skill id.
+      if (onUpdateGapReport && gapReport) {
+        const existingSkills = [
+          ...(gapReport.skills?.missing || []),
+          ...(gapReport.skills?.partial || []),
+          ...(gapReport.skills?.mastered || []),
+        ];
+
+        const diagnosisReadinessById = {};
+        (result.diagnosis?.skill_readiness || []).forEach((s) => {
+          diagnosisReadinessById[s.id] = s.readiness;
+        });
+
+        const normalizedReadiness = existingSkills.map((skill) => {
+          const fromMastery = result.updated_mastery?.[skill.id];
+          const fromExisting = skill.proficiency ?? 0;
+          const fromDiagnosis = diagnosisReadinessById[skill.id];
+
+          // Important: use diagnosis readiness as the primary proficiency signal.
+          // Raw mastery for the role-skill concept may not change unless that concept itself is studied.
+          const readiness =
+            typeof fromDiagnosis === 'number'
+              ? fromDiagnosis
+              : (typeof fromMastery === 'number' ? fromMastery : fromExisting);
+          return {
+            id: skill.id,
+            readiness: Math.max(0, Math.min(1, readiness)),
+          };
+        });
+
+        const updatedReport = recomputeGapReportAfterDiagnosis(gapReport, {
+          ...(result.diagnosis || {}),
+          skill_readiness: normalizedReadiness,
+        });
         if (updatedReport) onUpdateGapReport(updatedReport);
       }
 
