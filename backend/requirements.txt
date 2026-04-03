@@ -4,3 +4,4 @@ networkx==3.2.1
 authlib
 python-dotenv
 requests
+gunicorn
